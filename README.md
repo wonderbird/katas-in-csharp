@@ -1,4 +1,4 @@
-# Starter Template for new .NET Projects
+# Katas in C#
 
 [![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/wonderbird/katas-in-csharp)
 [![Build Status Badge](https://github.com/wonderbird/katas-in-csharp/workflows/.NET/badge.svg)](https://github.com/wonderbird/katas-in-csharp/actions?query=workflow%3A%22.NET%22)
