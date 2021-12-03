@@ -1,5 +1,3 @@
-using System;
-
 namespace DotnetStarter.Logic
 {
     public class HelloWorld
