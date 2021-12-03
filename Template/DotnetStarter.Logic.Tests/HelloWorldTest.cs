@@ -1,4 +1,3 @@
-using System;
 using Xunit;
 
 namespace DotnetStarter.Logic.Tests
@@ -6,9 +5,7 @@ namespace DotnetStarter.Logic.Tests
     public class HelloWorldTest
     {
         [Fact]
-        public void Hello_ReturnsWorld()
-        {
+        public void Hello_ReturnsWorld() =>
             Assert.Equal("World!", HelloWorld.Hello());
-        }
     }
 }

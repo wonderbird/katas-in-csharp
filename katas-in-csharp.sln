@@ -1,0 +1,52 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31911.196
+MinimumVisualStudioVersion = 15.0.26124.0
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{7CF31C68-F031-4F2B-B00A-D7A8C8C37D81}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitignore = .gitignore
+		.gitpod.Dockerfile = .gitpod.Dockerfile
+		.gitpod.yml = .gitpod.yml
+		.github\dependabot.yml = .github\dependabot.yml
+		.github\workflows\dotnet.yml = .github\workflows\dotnet.yml
+		tools\dupfinder.bat = tools\dupfinder.bat
+		tools\dupfinder.sh = tools\dupfinder.sh
+		tools\dupfinder.xslt = tools\dupfinder.xslt
+		LICENSE = LICENSE
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Template", "Template", "{6C7D6EAB-58E8-4864-8C11-FDACB9524CC8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotnetStarter.Logic", "Template\DotnetStarter.Logic\DotnetStarter.Logic.csproj", "{D8A915CF-6F15-458B-8E70-A1A98F3441B4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotnetStarter.Logic.Tests", "Template\DotnetStarter.Logic.Tests\DotnetStarter.Logic.Tests.csproj", "{EC1E80B1-1D7A-482C-95CF-E67BC04DDF20}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D8A915CF-6F15-458B-8E70-A1A98F3441B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8A915CF-6F15-458B-8E70-A1A98F3441B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8A915CF-6F15-458B-8E70-A1A98F3441B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8A915CF-6F15-458B-8E70-A1A98F3441B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC1E80B1-1D7A-482C-95CF-E67BC04DDF20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC1E80B1-1D7A-482C-95CF-E67BC04DDF20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC1E80B1-1D7A-482C-95CF-E67BC04DDF20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC1E80B1-1D7A-482C-95CF-E67BC04DDF20}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D8A915CF-6F15-458B-8E70-A1A98F3441B4} = {6C7D6EAB-58E8-4864-8C11-FDACB9524CC8}
+		{EC1E80B1-1D7A-482C-95CF-E67BC04DDF20} = {6C7D6EAB-58E8-4864-8C11-FDACB9524CC8}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DCB8F894-FC57-4819-81E4-59C984EA02E5}
+	EndGlobalSection
+EndGlobal
