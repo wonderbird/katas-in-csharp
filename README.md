@@ -7,8 +7,8 @@
 [![Code Maintainability](https://img.shields.io/codeclimate/maintainability-percentage/wonderbird/katas-in-csharp)](https://codeclimate.com/github/wonderbird/katas-in-csharp)
 [![Issues in Code](https://img.shields.io/codeclimate/issues/wonderbird/katas-in-csharp)](https://codeclimate.com/github/wonderbird/katas-in-csharp/issues)
 [![Technical Debt](https://img.shields.io/codeclimate/tech-debt/wonderbird/katas-in-csharp)](https://codeclimate.com/github/wonderbird/katas-in-csharp)
-[![CodeScene Code Health](https://codescene.io/projects/13371/status-badges/code-health)](https://codescene.io/projects/13371/jobs/latest-successful/results)
-[![CodeScene System Mastery](https://codescene.io/projects/13371/status-badges/system-mastery)](https://codescene.io/projects/13371/jobs/latest-successful/results)
+[![CodeScene Code Health](https://codescene.io/projects/21236/status-badges/code-health)](https://codescene.io/projects/21236/jobs/latest-successful/results)
+[![CodeScene System Mastery](https://codescene.io/projects/21236/status-badges/system-mastery)](https://codescene.io/projects/21236/jobs/latest-successful/results)
 
 This repository contains my implementation of some code katas in Go.
 
