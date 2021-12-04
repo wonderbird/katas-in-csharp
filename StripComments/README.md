@@ -1,4 +1,11 @@
-Source: https://www.codewars.com/kata/51c8e37cee245da6b40000bd/train/csharp
+---
+title: Strip Comments
+kyu: 4
+source: https://www.codewars.com/kata/51c8e37cee245da6b40000bd/train/csharp
+keywords: ALGORITHMS, STRINGS
+---
+
+# Strip Comments
 
 Complete the solution so that it strips all text that follows any of a set of comment markers passed in. Any whitespace at the end of the line should also be stripped out.
 
@@ -26,5 +33,3 @@ The code would be called like so:
 string stripped = StripCommentsSolution.StripComments("apples, pears # and bananas\ngrapes\nbananas !apples", new [] { "#", "!" })
 // result should == "apples, pears\ngrapes\nbananas"
 ```
-
-keywords: ALGORITHMS STRINGS
