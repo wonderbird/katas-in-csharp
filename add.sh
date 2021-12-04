@@ -2,6 +2,19 @@
 #
 # Add new kata
 #
+# This script will ask you some questions about your kata and then generate
+#
+# - a folder for the kata
+# - a library project for the logic of the kata
+# - a xUnit test project with reference to the library project
+# - a README.md inside the folder
+#
+# It will add the csproj files to the overall solution file katas-in-csharp.sln
+#
+# NOTE:
+# Please add the README.md file to your solution folder manually as an existing item.
+# At the time of writing the `dotnet sln add` command didn't support non-project files.
+#
 set -Eeufo pipefail
 
 read -p "Title: " TITLE
@@ -51,3 +64,4 @@ popd
 
 dotnet sln katas-in-csharp.sln add "$DIR/$LOGIC/$LOGIC.csproj" --solution-folder "$DIR"
 dotnet sln katas-in-csharp.sln add "$DIR/$TEST/$TEST.csproj" --solution-folder "$DIR"
+
