@@ -19,6 +19,10 @@ an [Open Source License](https://www.jetbrains.com/community/opensource/) for th
 
 ## Development
 
+### Adding New Katas
+
+Use the shell script [add.sh](add.sh) to add new katas.
+
 ### Quick-Start
 
 Click the [![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/wonderbird/dotnet-starter) badge (also above) to launch a web IDE.
