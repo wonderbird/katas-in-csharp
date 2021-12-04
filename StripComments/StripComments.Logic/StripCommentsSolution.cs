@@ -1,24 +1,36 @@
-using System;
-using System.Diagnostics.CodeAnalysis;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace StripComments.Logic
 {
     public static class StripCommentsSolution
     {
-        [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "<Pending>")]
         public static string StripComments(string text, string[] commentSymbols)
         {
-            var result = text;
+            const char endOfLine = '\n';
+
+            var inputLines = text.Split(endOfLine);
+
+            var outputLines = inputLines
+                .Select(line => StripCommentsFromSingleLine(line, commentSymbols))
+                .ToList();
+
+            return string.Join(endOfLine, outputLines);
+        }
+
+        private static string StripCommentsFromSingleLine(
+            string line,
+            IEnumerable<string> commentSymbols
+        )
+        {
+            var remainder = line;
 
             foreach (var commentSymbol in commentSymbols)
             {
-                if (text.StartsWith(commentSymbol, StringComparison.CurrentCulture))
-                {
-                    result = "";
-                }
+                remainder = remainder.Split(commentSymbol)[0].TrimEnd();
             }
-            return result;
+
+            return remainder;
         }
     }
 }

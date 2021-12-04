@@ -6,7 +6,7 @@ namespace StripComments.Logic.Tests
 {
     public class StripCommentsSolutionTest
     {
-        [Fact(Skip = "Not implemented yet")]
+        [Fact()]
         [SuppressMessage(
             "Usage",
             "xUnit1004:Test methods should not be skipped",
@@ -53,16 +53,36 @@ namespace StripComments.Logic.Tests
             Assert.Equal("", StripCommentsSolution.StripComments(input, commentSymbols));
         }
 
-        [Fact(Skip = "TODO: Implement this feature next.")]
-        [SuppressMessage("Usage", "xUnit1004:Test methods should not be skipped", Justification = "<Pending>")]
-        public void StripComments_TwoLinesWithCommentInSecondLine_ReturnsFirstLine()
+        [Fact]
+        public void StripComments_SingleLineEndingWithComment_RemovesComment()
+        {
+            string[] commentSymbols = { "#" };
+            const string input = "Hello# World!";
+            const string expected = "Hello";
+
+            Assert.Equal(expected, StripCommentsSolution.StripComments(input, commentSymbols));
+        }
+
+        [Fact]
+        public void StripComments_TwoLinesWithCommentAtBeginningOfSecondLine_ReturnsFirstLine()
         {
             string[] commentSymbols = { "#" };
             const string firstLine = "Hello";
             const string secondLine = "# World";
             const string input = firstLine + "\n" + secondLine;
+            const string expected = firstLine + "\n";
 
-            Assert.Equal(firstLine, StripCommentsSolution.StripComments(input, commentSymbols));
+            Assert.Equal(expected, StripCommentsSolution.StripComments(input, commentSymbols));
+        }
+
+        [Fact]
+        public void StripComments_SingleLineEndingWithSpacesAndComment_RemovesTrailingSpaces()
+        {
+            string[] commentSymbols = { "#" };
+            const string input = "Hello  # World!";
+            const string expected = "Hello";
+
+            Assert.Equal(expected, StripCommentsSolution.StripComments(input, commentSymbols));
         }
     }
 }
