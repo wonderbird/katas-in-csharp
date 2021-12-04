@@ -22,6 +22,7 @@ an [Open Source License](https://www.jetbrains.com/community/opensource/) for th
 ### Adding New Katas
 
 Use the shell script [add.sh](add.sh) to add new katas.
+Read the header comment in [add.sh](add.sh) for usage instructions.
 
 ### Quick-Start
 
