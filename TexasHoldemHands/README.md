@@ -35,7 +35,7 @@ Possible hands are, in descending order of value:
    two cards, then the three other ranks.
 9. Nothing. Tiebreaker is the rank of the cards from high to low.
 
-Given hole cards and community cards, complete the function hand to return
+Given hole cards and community cards, complete the function `hand` to return
 the type of hand (as written above, you can ignore case) and a list of ranks
 in decreasing order of significance, to use for comparison against other
 hands of the same type, of the best possible hand.
