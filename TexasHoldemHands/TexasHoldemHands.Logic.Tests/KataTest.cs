@@ -4,20 +4,18 @@ namespace TexasHoldemHands.Logic.Tests
 {
     public class KataTest
     {
-        [Fact]
-        public void Hand_Nothing()
+        [Theory]
+        [InlineData(new[]{ "K♠", "A♦" }, new[]{ "J♣", "Q♥", "9♥", "2♥", "3♦" }, "nothing", new[]{ "A", "K", "Q", "J", "9" })]
+        [InlineData(new[]{ "K♠", "A♦" }, new[]{ "J♣", "10♥", "9♥", "2♥", "3♦" }, "nothing", new[]{ "A", "K", "J", "10", "9" })]
+        public void Nothing(
+            string[] holeCards,
+            string[] communityCards,
+            string expectedType,
+            string[] expectedRanks
+        )
         {
-            string[] holeCards = { "K♠", "A♦" };
-            string[] communityCards = { "J♣", "Q♥", "9♥", "2♥", "3♦" };
-
-            string type;
-            string[] ranks;
-            (type, ranks) = Kata.Hand(holeCards, communityCards);
-
-            const string expectedType = "nothing";
+            (var type, var ranks) = Kata.Hand(holeCards, communityCards);
             Assert.Equal(expectedType, type);
-
-            string[] expectedRanks = { "A", "K", "Q", "J", "9" };
             Assert.Equal(expectedRanks, ranks);
         }
     }
