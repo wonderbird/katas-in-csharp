@@ -14,8 +14,32 @@ namespace TexasHoldemHands.Logic
                 .ToList();
             allRanks.Sort(Descending);
 
+            var cardFrequencies = new Dictionary<string, int>()
+            {
+                { "A", 0 },
+                { "K", 0 },
+                { "Q", 0 },
+                { "J", 0 },
+                { "10", 0 },
+                { "9", 0 },
+                { "8", 0 },
+                { "7", 0 },
+                { "6", 0 },
+                { "5", 0 },
+                { "4", 0 },
+                { "3", 0 },
+                { "2", 0 },
+            };
+            allRanks.ForEach(card => cardFrequencies[card]++);
+            var rank = nothing;
+            if (cardFrequencies.Any(bin => bin.Value == 2))
+            {
+                var pair = "pair";
+                rank = pair;
+            }
+
             var topRanks = allRanks.Take(5).ToArray();
-            return (nothing, topRanks);
+            return (rank, topRanks);
         }
 
         private static int Descending(string x, string y)
