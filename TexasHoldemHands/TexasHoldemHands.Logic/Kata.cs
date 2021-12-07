@@ -5,6 +5,11 @@ namespace TexasHoldemHands.Logic
 {
     public static class Kata
     {
+        private const string Nothing = "nothing";
+        private const string Pair = "pair";
+        private const int CardsPerPair = 2;
+        private const int CardsPerHand = 5;
+
         private static readonly List<string> Ranks = new()
         {
             "A",
@@ -27,32 +32,46 @@ namespace TexasHoldemHands.Logic
             string[] communityCards
         )
         {
-            const string nothing = "nothing";
+            var sortedRanks = CombineRanksAndSortDescending(holeCards, communityCards);
+            var rankFrequencies = CountRankFrequencies(sortedRanks);
 
+            var rank = Nothing;
+            if (rankFrequencies.Any(bin => bin.Value == CardsPerPair))
+            {
+                rank = Pair;
+            }
+
+            var pairRanks = rankFrequencies.Where(bin => bin.Value == CardsPerPair)
+                .Select(bin => bin.Key)
+                .ToList();
+
+            var individualRanks = rankFrequencies.Where(bin => bin.Value == 1)
+                .Select(bin => bin.Key)
+                .Take(CardsPerHand - CardsPerPair * pairRanks.Count)
+                .ToList();
+
+            var topRanks = pairRanks.Concat(individualRanks).ToArray();
+
+            return (rank, topRanks);
+        }
+
+        private static Dictionary<string, int> CountRankFrequencies(List<string> sortedRanks)
+        {
+            var rankFrequencies = Ranks.ToDictionary(rank => rank, _ => 0);
+            sortedRanks.ForEach(card => rankFrequencies[card]++);
+            return rankFrequencies;
+        }
+
+        private static List<string> CombineRanksAndSortDescending(
+            string[] holeCards,
+            string[] communityCards
+        )
+        {
             var allRanks = holeCards.Select(card => card[..^1])
                 .Concat(communityCards.Select(card => card[..^1]))
                 .ToList();
             allRanks.Sort(Descending);
-
-            var cardFrequencies = Ranks.ToDictionary(rank => rank, _ => 0);
-            allRanks.ForEach(card => cardFrequencies[card]++);
-            var rank = nothing;
-            if (cardFrequencies.Any(bin => bin.Value == 2))
-            {
-                const string pair = "pair";
-                rank = pair;
-            }
-
-            var pairRanks = cardFrequencies.Where(bin => bin.Value == 2)
-                .Select(bin => bin.Key)
-                .ToList();
-            var individualRanks = cardFrequencies.Where(bin => bin.Value == 1)
-                .Select(bin => bin.Key)
-                .Take(5 - 2 * pairRanks.Count)
-                .ToList();
-            var topRanks = pairRanks.Concat(individualRanks).ToArray();
-
-            return (rank, topRanks);
+            return allRanks;
         }
 
         private static int Descending(string x, string y)
