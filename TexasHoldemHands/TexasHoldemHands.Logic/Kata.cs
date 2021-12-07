@@ -33,6 +33,7 @@ namespace TexasHoldemHands.Logic
         )
         {
             var sortedRanks = CombineRanksAndSortDescending(holeCards, communityCards);
+
             var rankFrequencies = CountRankFrequencies(sortedRanks);
 
             var rank = Nothing;
@@ -55,24 +56,23 @@ namespace TexasHoldemHands.Logic
             return (rank, topRanks);
         }
 
-        private static Dictionary<string, int> CountRankFrequencies(List<string> sortedRanks)
-        {
-            var rankFrequencies = Ranks.ToDictionary(rank => rank, _ => 0);
-            sortedRanks.ForEach(card => rankFrequencies[card]++);
-            return rankFrequencies;
-        }
-
         private static List<string> CombineRanksAndSortDescending(
             string[] holeCards,
             string[] communityCards
         )
         {
-            var allRanks = holeCards.Select(card => card[..^1])
-                .Concat(communityCards.Select(card => card[..^1]))
+            var allRanks = holeCards.Select(Rank)
+                .Concat(communityCards.Select(Rank))
                 .ToList();
+
             allRanks.Sort(Descending);
+
             return allRanks;
         }
+
+
+        private static string Rank(string card) =>
+            card[..^1];
 
         private static int Descending(string x, string y)
         {
@@ -80,6 +80,15 @@ namespace TexasHoldemHands.Logic
             var yIndex = Ranks.IndexOf(y);
 
             return xIndex < yIndex ? -1 : 1;
+        }
+
+        private static Dictionary<string, int> CountRankFrequencies(List<string> ranks)
+        {
+            var rankFrequencies = Ranks.ToDictionary(rank => rank, _ => 0);
+
+            ranks.ForEach(card => rankFrequencies[card]++);
+
+            return rankFrequencies;
         }
     }
 }
