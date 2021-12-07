@@ -38,7 +38,10 @@ namespace TexasHoldemHands.Logic
                 rank = pair;
             }
 
-            var topRanks = allRanks.Take(5).ToArray();
+            var pairRanks = cardFrequencies.Where(bin => bin.Value == 2).Select(bin => bin.Key).ToList();
+            var individualRanks = cardFrequencies.Where(bin => bin.Value == 1).Select(bin => bin.Key).Take(5 - 2 * pairRanks.Count).ToList();
+            var topRanks = pairRanks.Concat(individualRanks).ToArray();
+
             return (rank, topRanks);
         }
 
