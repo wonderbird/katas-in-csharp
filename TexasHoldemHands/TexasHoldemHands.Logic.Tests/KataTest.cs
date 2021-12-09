@@ -37,5 +37,20 @@ namespace TexasHoldemHands.Logic.Tests
             Assert.Equal(expectedType, type);
             Assert.Equal(expectedRanks, ranks);
         }
+
+        [Theory]
+        [InlineData("Codewars test case", new[] { "K♠", "J♦" }, new[] { "J♣", "K♥", "9♥", "2♥", "3♦" }, "two pair", new[] { "K", "J", "9" })]
+        public void TwoPair(
+            string description,
+            string[] holeCards,
+            string[] communityCards,
+            string expectedType,
+            string[] expectedRanks
+        )
+        {
+            (var type, var ranks) = Kata.Hand(holeCards, communityCards);
+            Assert.Equal(expectedType, type);
+            Assert.Equal(expectedRanks, ranks);
+        }
     }
 }

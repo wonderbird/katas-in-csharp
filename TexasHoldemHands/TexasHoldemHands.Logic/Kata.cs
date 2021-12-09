@@ -7,6 +7,8 @@ namespace TexasHoldemHands.Logic
     {
         private const string Nothing = "nothing";
         private const string Pair = "pair";
+        private const string TwoPair = "two pair";
+
         private const int CardsPerPair = 2;
         private const int CardsPerHand = 5;
 
@@ -37,10 +39,14 @@ namespace TexasHoldemHands.Logic
             var rankFrequencies = CountRankFrequencies(sortedRanks);
 
             var rank = Nothing;
-            if (rankFrequencies.Any(bin => bin.Value == CardsPerPair))
+
+            var numberOfPairs = rankFrequencies.Count(bin => bin.Value == CardsPerPair);
+            var numberToPairName = new Dictionary<int, string> { { 1, Pair }, { 2, TwoPair } };
+            if (numberOfPairs is >= 1 and <= 2)
             {
-                rank = Pair;
+                rank = numberToPairName[numberOfPairs];
             }
+
 
             var pairRanks = rankFrequencies.Where(bin => bin.Value == CardsPerPair)
                 .Select(bin => bin.Key)
