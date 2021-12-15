@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -38,29 +39,46 @@ namespace TexasHoldemHands.Logic
 
             var rankFrequencies = CountRankFrequencies(sortedRanks);
 
-            var rank = Nothing;
-
-            var numberOfPairs = rankFrequencies.Count(bin => bin.Value == CardsPerPair);
-            var numberToPairName = new Dictionary<int, string> { { 1, Pair }, { 2, TwoPair } };
-            if (numberOfPairs is >= 1 and <= 2)
-            {
-                rank = numberToPairName[numberOfPairs];
-            }
-
-
-            var pairRanks = rankFrequencies.Where(bin => bin.Value == CardsPerPair)
-                .Select(bin => bin.Key)
-                .ToList();
+            var rank = "";
+            var topRanks = new List<string>();
 
             var individualRanks = rankFrequencies.Where(bin => bin.Value == 1)
                 .Select(bin => bin.Key)
-                .Take(CardsPerHand - CardsPerPair * pairRanks.Count)
                 .ToList();
 
-            var topRanks = pairRanks.Concat(individualRanks).ToArray();
+            var isThreeOfAKind = rankFrequencies.Any(IsTriple);
+            if (isThreeOfAKind)
+            {
+                rank = "three-of-a-kind";
+                topRanks.Add(rankFrequencies.First(IsTriple).Key);
+                topRanks.AddRange(individualRanks.Take(CardsPerHand - 3));
+            }
+            else
+            {
+                var numberOfPairs = rankFrequencies.Count(bin => bin.Value == CardsPerPair);
+                var numberToPairName = new Dictionary<int, string> { { 1, Pair }, { 2, TwoPair } };
+                if (numberOfPairs is >= 1 and <= 2)
+                {
+                    rank = numberToPairName[numberOfPairs];
+                    var pairRanks = rankFrequencies.Where(bin => bin.Value == CardsPerPair)
+                        .Select(bin => bin.Key)
+                        .ToList();
 
-            return (rank, topRanks);
+                    topRanks.AddRange(pairRanks);
+                    topRanks.AddRange(individualRanks.Take(CardsPerHand - numberOfPairs * CardsPerPair));
+                }
+            }
+
+            if (!topRanks.Any())
+            {
+                rank = Nothing;
+                topRanks.AddRange(individualRanks.Take(CardsPerHand));
+            }
+
+            return (rank, topRanks.ToArray());
         }
+
+        private static bool IsTriple(KeyValuePair<string, int> cardAndQuantity) => cardAndQuantity.Value == 3;
 
         private static List<string> CombineRanksAndSortDescending(
             string[] holeCards,

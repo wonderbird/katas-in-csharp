@@ -14,7 +14,6 @@ namespace TexasHoldemHands.Logic.Tests
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "xUnit1004:Test methods should not be skipped", Justification = "Tested functionality has not been implemented")]
         public void FixedTests()
         {
-            // expected: hand name         cards                       input -> hole cards             community cards
             SampleTest(
                 ("nothing", new[] { "A", "K", "Q", "J", "9" }),
                 new[] { "K♠", "A♦" },
