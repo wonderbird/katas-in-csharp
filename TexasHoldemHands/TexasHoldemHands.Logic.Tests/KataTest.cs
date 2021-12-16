@@ -1,15 +1,23 @@
+using System.Diagnostics.CodeAnalysis;
 using Xunit;
 
 namespace TexasHoldemHands.Logic.Tests
 {
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "The parameter 'description' makes the test output more understandable, but is not required for the test itself.")]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "xUnit1026:Theory methods should use all of their parameters", Justification = "The parameter 'description' makes the test output more understandable, but is not required for the test itself.")]
+    [SuppressMessage("Style", "IDE0060:Remove unused parameter",
+        Justification =
+            "The parameter 'description' makes the test output more understandable, but is not required for the test itself.")]
+    [SuppressMessage("Usage", "xUnit1026:Theory methods should use all of their parameters",
+        Justification =
+            "The parameter 'description' makes the test output more understandable, but is not required for the test itself.")]
     public class KataTest
     {
         [Theory]
-        [InlineData("Codewars test case", new[] { "K♠", "A♦" }, new[] { "J♣", "Q♥", "9♥", "2♥", "3♦" }, "nothing", new[] { "A", "K", "Q", "J", "9" })]
-        [InlineData("Different community cards than in Codewars test case", new[] { "K♠", "A♦" }, new[] { "J♣", "10♥", "9♥", "2♥", "3♦" }, "nothing", new[] { "A", "K", "J", "10", "9" })]
-        [InlineData("Different hole and community cards than in Codewars test case", new[] { "2♠", "6♦" }, new[] { "K♣", "8♥", "7♥", "Q♥", "3♦" }, "nothing", new[] { "K", "Q", "8", "7", "6" })]
+        [InlineData("Codewars test case", new[] { "K♠", "A♦" }, new[] { "J♣", "Q♥", "9♥", "2♥", "3♦" }, "nothing",
+            new[] { "A", "K", "Q", "J", "9" })]
+        [InlineData("Different community cards than in Codewars test case", new[] { "K♠", "A♦" },
+            new[] { "J♣", "10♥", "9♥", "2♥", "3♦" }, "nothing", new[] { "A", "K", "J", "10", "9" })]
+        [InlineData("Different hole and community cards than in Codewars test case", new[] { "2♠", "6♦" },
+            new[] { "K♣", "8♥", "7♥", "Q♥", "3♦" }, "nothing", new[] { "K", "Q", "8", "7", "6" })]
         public void Nothing(
             string description,
             string[] holeCards,
@@ -18,13 +26,14 @@ namespace TexasHoldemHands.Logic.Tests
             string[] expectedRanks
         )
         {
-            (var type, var ranks) = Kata.Hand(holeCards, communityCards);
+            var (type, ranks) = Kata.Hand(holeCards, communityCards);
             Assert.Equal(expectedType, type);
             Assert.Equal(expectedRanks, ranks);
         }
 
         [Theory]
-        [InlineData("Codewars test case", new[] { "K♠", "Q♦" }, new[] { "J♣", "Q♥", "9♥", "2♥", "3♦" }, "pair", new[] { "Q", "K", "J", "9" })]
+        [InlineData("Codewars test case", new[] { "K♠", "Q♦" }, new[] { "J♣", "Q♥", "9♥", "2♥", "3♦" }, "pair",
+            new[] { "Q", "K", "J", "9" })]
         public void SinglePair(
             string description,
             string[] holeCards,
@@ -33,13 +42,14 @@ namespace TexasHoldemHands.Logic.Tests
             string[] expectedRanks
         )
         {
-            (var type, var ranks) = Kata.Hand(holeCards, communityCards);
+            var (type, ranks) = Kata.Hand(holeCards, communityCards);
             Assert.Equal(expectedType, type);
             Assert.Equal(expectedRanks, ranks);
         }
 
         [Theory]
-        [InlineData("Codewars test case", new[] { "K♠", "J♦" }, new[] { "J♣", "K♥", "9♥", "2♥", "3♦" }, "two pair", new[] { "K", "J", "9" })]
+        [InlineData("Codewars test case", new[] { "K♠", "J♦" }, new[] { "J♣", "K♥", "9♥", "2♥", "3♦" }, "two pair",
+            new[] { "K", "J", "9" })]
         public void TwoPair(
             string description,
             string[] holeCards,
@@ -48,13 +58,14 @@ namespace TexasHoldemHands.Logic.Tests
             string[] expectedRanks
         )
         {
-            (var type, var ranks) = Kata.Hand(holeCards, communityCards);
+            var (type, ranks) = Kata.Hand(holeCards, communityCards);
             Assert.Equal(expectedType, type);
             Assert.Equal(expectedRanks, ranks);
         }
 
         [Theory]
-        [InlineData("Codewars test case", new[] { "4♠", "9♦" }, new[] { "J♣", "Q♥", "Q♠", "2♥", "Q♦" }, "three-of-a-kind", new[] { "Q", "J", "9" })]
+        [InlineData("Codewars test case", new[] { "4♠", "9♦" }, new[] { "J♣", "Q♥", "Q♠", "2♥", "Q♦" },
+            "three-of-a-kind", new[] { "Q", "J", "9" })]
         public void ThreeOfAKind(
             string description,
             string[] holeCards,
@@ -63,7 +74,7 @@ namespace TexasHoldemHands.Logic.Tests
             string[] expectedRanks
         )
         {
-            (var type, var ranks) = Kata.Hand(holeCards, communityCards);
+            var (type, ranks) = Kata.Hand(holeCards, communityCards);
             Assert.Equal(expectedType, type);
             Assert.Equal(expectedRanks, ranks);
         }

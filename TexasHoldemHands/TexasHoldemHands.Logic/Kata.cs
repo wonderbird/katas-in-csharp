@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,11 +8,13 @@ namespace TexasHoldemHands.Logic
         private const string Nothing = "nothing";
         private const string Pair = "pair";
         private const string TwoPair = "two pair";
+        private const string ThreeOfAKind = "three-of-a-kind";
 
         private const int CardsPerPair = 2;
+        private const int CardsPerTriple = 3;
         private const int CardsPerHand = 5;
 
-        private static readonly List<string> Ranks = new()
+        private static readonly List<string> AllRanks = new()
         {
             "A",
             "K",
@@ -35,84 +36,149 @@ namespace TexasHoldemHands.Logic
             string[] communityCards
         )
         {
-            var sortedRanks = CombineRanksAndSortDescending(holeCards, communityCards);
+            var handCards = new HandCards(holeCards, communityCards);
+            var handClassifier = new HandClassifierChain();
+            var handClassification = handClassifier.ClassifyHand(handCards);
 
-            var rankFrequencies = CountRankFrequencies(sortedRanks);
+            return (type: handClassification.Type, handClassification.Ranks.ToArray());
+        }
 
-            var rank = "";
-            var topRanks = new List<string>();
-
-            var individualRanks = rankFrequencies.Where(bin => bin.Value == 1)
-                .Select(bin => bin.Key)
-                .ToList();
-
-            var isThreeOfAKind = rankFrequencies.Any(IsTriple);
-            if (isThreeOfAKind)
+        private class HandCards
+        {
+            public HandCards(string[] holeCards, string[] communityCards)
             {
-                rank = "three-of-a-kind";
-                topRanks.Add(rankFrequencies.First(IsTriple).Key);
-                topRanks.AddRange(individualRanks.Take(CardsPerHand - 3));
+                var sortedRanks = CombineRanksAndSortDescending(holeCards, communityCards);
+                RankFrequencies = CountRankFrequencies(sortedRanks);
+                IndividualRanks = RankFrequencies.Where(bin => bin.Value == 1)
+                    .Select(bin => bin.Key)
+                    .ToList();
             }
-            else
+
+            public Dictionary<string, int> RankFrequencies { get; }
+
+            public List<string> IndividualRanks { get; }
+
+            private List<string> CombineRanksAndSortDescending(
+                string[] holeCards,
+                string[] communityCards
+            )
             {
-                var numberOfPairs = rankFrequencies.Count(bin => bin.Value == CardsPerPair);
+                var allRanks = holeCards.Select(Rank)
+                    .Concat(communityCards.Select(Rank))
+                    .ToList();
+
+                allRanks.Sort(Descending);
+
+                return allRanks;
+            }
+
+            private string Rank(string card) => card[..^1];
+
+            private int Descending(string x, string y)
+            {
+                var xIndex = AllRanks.IndexOf(x);
+                var yIndex = AllRanks.IndexOf(y);
+
+                return xIndex < yIndex ? -1 : 1;
+            }
+
+            private Dictionary<string, int> CountRankFrequencies(List<string> ranks)
+            {
+                var rankFrequencies = AllRanks.ToDictionary(rank => rank, _ => 0);
+
+                ranks.ForEach(card => rankFrequencies[card]++);
+
+                return rankFrequencies;
+            }
+        }
+
+        private class HandClassification
+        {
+            public string Type { get; set; }
+            public List<string> Ranks { get; init; } = new();
+        }
+
+        private abstract class HandClassifier
+        {
+            protected HandClassifier _next;
+
+            public abstract HandClassification ClassifyHand(HandCards handCards);
+
+            public HandClassifier RegisterNext(HandClassifier next)
+            {
+                _next = next;
+                return _next;
+            }
+        }
+
+        private class ThreeOfAKindClassifier : HandClassifier
+        {
+            public override HandClassification ClassifyHand(HandCards handCards)
+            {
+                var handClassification = new HandClassification();
+
+                var isThreeOfAKind = handCards.RankFrequencies.Any(IsTriple);
+                if (isThreeOfAKind)
+                {
+                    handClassification.Type = ThreeOfAKind;
+                    handClassification.Ranks.Add(handCards.RankFrequencies.First(IsTriple).Key);
+                    handClassification.Ranks.AddRange(handCards.IndividualRanks.Take(CardsPerHand - CardsPerTriple));
+
+                    return handClassification;
+                }
+
+                return _next.ClassifyHand(handCards);
+            }
+
+            private bool IsTriple(KeyValuePair<string, int> cardAndQuantity) => cardAndQuantity.Value == CardsPerTriple;
+        }
+
+        private class PairClassifier : HandClassifier
+        {
+            public override HandClassification ClassifyHand(HandCards handCards)
+            {
+                var handClassification = new HandClassification();
+
+                var numberOfPairs = handCards.RankFrequencies.Count(bin => bin.Value == CardsPerPair);
+
                 var numberToPairName = new Dictionary<int, string> { { 1, Pair }, { 2, TwoPair } };
                 if (numberOfPairs is >= 1 and <= 2)
                 {
-                    rank = numberToPairName[numberOfPairs];
-                    var pairRanks = rankFrequencies.Where(bin => bin.Value == CardsPerPair)
+                    handClassification.Type = numberToPairName[numberOfPairs];
+
+                    var pairRanks = handCards.RankFrequencies.Where(bin => bin.Value == CardsPerPair)
                         .Select(bin => bin.Key)
                         .ToList();
 
-                    topRanks.AddRange(pairRanks);
-                    topRanks.AddRange(individualRanks.Take(CardsPerHand - numberOfPairs * CardsPerPair));
+                    handClassification.Ranks.AddRange(pairRanks);
+                    handClassification.Ranks.AddRange(
+                        handCards.IndividualRanks.Take(CardsPerHand - numberOfPairs * CardsPerPair));
+
+                    return handClassification;
                 }
-            }
 
-            if (!topRanks.Any())
+                return _next.ClassifyHand(handCards);
+            }
+        }
+
+        private class NothingClassifier : HandClassifier
+        {
+            public override HandClassification ClassifyHand(HandCards handCards) =>
+                new() { Type = Nothing, Ranks = handCards.IndividualRanks.Take(CardsPerHand).ToList() };
+        }
+
+        private class HandClassifierChain
+        {
+            private readonly HandClassifier _root;
+
+            public HandClassifierChain()
             {
-                rank = Nothing;
-                topRanks.AddRange(individualRanks.Take(CardsPerHand));
+                _root = new PairClassifier();
+                _ = _root.RegisterNext(new ThreeOfAKindClassifier())
+                    .RegisterNext(new NothingClassifier());
             }
 
-            return (rank, topRanks.ToArray());
-        }
-
-        private static bool IsTriple(KeyValuePair<string, int> cardAndQuantity) => cardAndQuantity.Value == 3;
-
-        private static List<string> CombineRanksAndSortDescending(
-            string[] holeCards,
-            string[] communityCards
-        )
-        {
-            var allRanks = holeCards.Select(Rank)
-                .Concat(communityCards.Select(Rank))
-                .ToList();
-
-            allRanks.Sort(Descending);
-
-            return allRanks;
-        }
-
-
-        private static string Rank(string card) =>
-            card[..^1];
-
-        private static int Descending(string x, string y)
-        {
-            var xIndex = Ranks.IndexOf(x);
-            var yIndex = Ranks.IndexOf(y);
-
-            return xIndex < yIndex ? -1 : 1;
-        }
-
-        private static Dictionary<string, int> CountRankFrequencies(List<string> ranks)
-        {
-            var rankFrequencies = Ranks.ToDictionary(rank => rank, _ => 0);
-
-            ranks.ForEach(card => rankFrequencies[card]++);
-
-            return rankFrequencies;
+            public HandClassification ClassifyHand(HandCards handCards) => _root.ClassifyHand(handCards);
         }
     }
 }
