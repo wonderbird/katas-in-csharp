@@ -100,14 +100,14 @@ namespace TexasHoldemHands.Logic
 
         private abstract class HandClassifier
         {
-            protected HandClassifier _next;
+            protected HandClassifier Next;
 
             public abstract HandClassification ClassifyHand(HandCards handCards);
 
             public HandClassifier RegisterNext(HandClassifier next)
             {
-                _next = next;
-                return _next;
+                Next = next;
+                return Next;
             }
         }
 
@@ -127,7 +127,7 @@ namespace TexasHoldemHands.Logic
                     return handClassification;
                 }
 
-                return _next.ClassifyHand(handCards);
+                return Next.ClassifyHand(handCards);
             }
 
             private bool IsTriple(KeyValuePair<string, int> cardAndQuantity) => cardAndQuantity.Value == CardsPerTriple;
@@ -157,7 +157,7 @@ namespace TexasHoldemHands.Logic
                     return handClassification;
                 }
 
-                return _next.ClassifyHand(handCards);
+                return Next.ClassifyHand(handCards);
             }
         }
 
