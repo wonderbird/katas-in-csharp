@@ -36,11 +36,10 @@ namespace TexasHoldemHands.Logic
             string[] communityCards
         )
         {
-            var handCards = new HandCards(holeCards, communityCards);
-            var handClassifier = new HandClassifierChain();
-            var handClassification = handClassifier.ClassifyHand(handCards);
+            var classifier = new HandClassifierChain();
+            var classification = classifier.ClassifyHand(holeCards, communityCards);
 
-            return (type: handClassification.Type, handClassification.Ranks.ToArray());
+            return classification.Tuple;
         }
 
         private class HandCards
@@ -96,6 +95,7 @@ namespace TexasHoldemHands.Logic
         {
             public string Type { get; set; }
             public List<string> Ranks { get; init; } = new();
+            public (string type, string[] ranks) Tuple => (Type, Ranks.ToArray());
         }
 
         private abstract class HandClassifier
@@ -178,7 +178,8 @@ namespace TexasHoldemHands.Logic
                     .RegisterNext(new NothingClassifier());
             }
 
-            public HandClassification ClassifyHand(HandCards handCards) => _root.ClassifyHand(handCards);
+            public HandClassification ClassifyHand(string[] holeCards, string[] communityCards) =>
+                _root.ClassifyHand(new HandCards(holeCards, communityCards));
         }
     }
 }
