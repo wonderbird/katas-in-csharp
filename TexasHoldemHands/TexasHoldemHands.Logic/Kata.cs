@@ -10,8 +10,6 @@ namespace TexasHoldemHands.Logic
         private const string TwoPair = "two pair";
         private const string ThreeOfAKind = "three-of-a-kind";
 
-        private const int CardsPerPair = 2;
-        private const int CardsPerTriple = 3;
         private const int CardsPerHand = 5;
 
         private static readonly List<string> AllRanks = new()
@@ -113,21 +111,23 @@ namespace TexasHoldemHands.Logic
 
         private class ThreeOfAKindClassifier : HandClassifier
         {
+            private const int CardsPerTriple = 3;
+
             public override HandClassification ClassifyHand(HandCards handCards)
             {
-                var handClassification = new HandClassification();
-
                 var isThreeOfAKind = handCards.RankFrequencies.Any(IsTriple);
-                if (isThreeOfAKind)
-                {
-                    handClassification.Type = ThreeOfAKind;
-                    handClassification.Ranks.Add(handCards.RankFrequencies.First(IsTriple).Key);
-                    handClassification.Ranks.AddRange(handCards.IndividualRanks.Take(CardsPerHand - CardsPerTriple));
 
-                    return handClassification;
+                if (!isThreeOfAKind)
+                {
+                    return Next.ClassifyHand(handCards);
                 }
 
-                return Next.ClassifyHand(handCards);
+                var handClassification = new HandClassification();
+                handClassification.Type = ThreeOfAKind;
+                handClassification.Ranks.Add(handCards.RankFrequencies.First(IsTriple).Key);
+                handClassification.Ranks.AddRange(handCards.IndividualRanks.Take(CardsPerHand - CardsPerTriple));
+
+                return handClassification;
             }
 
             private bool IsTriple(KeyValuePair<string, int> cardAndQuantity) => cardAndQuantity.Value == CardsPerTriple;
@@ -135,29 +135,30 @@ namespace TexasHoldemHands.Logic
 
         private class PairClassifier : HandClassifier
         {
+            private const int CardsPerPair = 2;
+
             public override HandClassification ClassifyHand(HandCards handCards)
             {
-                var handClassification = new HandClassification();
-
                 var numberOfPairs = handCards.RankFrequencies.Count(bin => bin.Value == CardsPerPair);
 
-                var numberToPairName = new Dictionary<int, string> { { 1, Pair }, { 2, TwoPair } };
-                if (numberOfPairs is >= 1 and <= 2)
+                if (numberOfPairs is < 1 or > 2)
                 {
-                    handClassification.Type = numberToPairName[numberOfPairs];
-
-                    var pairRanks = handCards.RankFrequencies.Where(bin => bin.Value == CardsPerPair)
-                        .Select(bin => bin.Key)
-                        .ToList();
-
-                    handClassification.Ranks.AddRange(pairRanks);
-                    handClassification.Ranks.AddRange(
-                        handCards.IndividualRanks.Take(CardsPerHand - numberOfPairs * CardsPerPair));
-
-                    return handClassification;
+                    return Next.ClassifyHand(handCards);
                 }
 
-                return Next.ClassifyHand(handCards);
+                var handClassification = new HandClassification();
+                var numberToPairName = new Dictionary<int, string> { { 1, Pair }, { 2, TwoPair } };
+                handClassification.Type = numberToPairName[numberOfPairs];
+
+                var pairRanks = handCards.RankFrequencies.Where(bin => bin.Value == CardsPerPair)
+                    .Select(bin => bin.Key)
+                    .ToList();
+                handClassification.Ranks.AddRange(pairRanks);
+
+                handClassification.Ranks.AddRange(
+                    handCards.IndividualRanks.Take(CardsPerHand - numberOfPairs * CardsPerPair));
+
+                return handClassification;
             }
         }
 
