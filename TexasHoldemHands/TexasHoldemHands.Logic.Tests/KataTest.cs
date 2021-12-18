@@ -78,5 +78,25 @@ namespace TexasHoldemHands.Logic.Tests
             Assert.Equal(expectedType, type);
             Assert.Equal(expectedRanks, ranks);
         }
+
+        [Theory]
+        [InlineData("Codewars test case", new[] { "Q♠", "2♦" }, new[] { "J♣", "10♥", "9♥", "K♥", "3♦" },
+            "straight", new[] { "K", "Q", "J", "10", "9" })]
+        [InlineData("Highest not included", new[] { "Q♠", "8♦" }, new[] { "J♣", "10♥", "9♥", "A♥", "3♦" },
+            "straight", new[] { "Q", "J", "10", "9", "8" })]
+        [InlineData("Start with lowest", new[] { "4♠", "5♦" }, new[] { "6♣", "7♥", "9♥", "A♥", "3♦" },
+            "straight", new[] { "7", "6", "5", "4", "3" })]
+        public void Straight(
+            string description,
+            string[] holeCards,
+            string[] communityCards,
+            string expectedType,
+            string[] expectedRanks
+        )
+        {
+            var (type, ranks) = Kata.Hand(holeCards, communityCards);
+            Assert.Equal(expectedType, type);
+            Assert.Equal(expectedRanks, ranks);
+        }
     }
 }

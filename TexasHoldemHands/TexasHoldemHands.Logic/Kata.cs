@@ -109,6 +109,54 @@ namespace TexasHoldemHands.Logic
             }
         }
 
+        private class StraightClassifier : HandClassifier
+        {
+            const int RequiredNumberOfConsecutiveCards = 4;
+
+            public override HandClassification ClassifyHand(HandCards handCards)
+            {
+                var rankSet = handCards.RankFrequencies.Where(bin => bin.Value > 0).Select(bin => bin.Key).ToList();
+                var (startIndex, length) = FindConsecutiveCards(rankSet);
+
+                if (length < RequiredNumberOfConsecutiveCards)
+                {
+                    return Next.ClassifyHand(handCards);
+                }
+
+                var handClassification = new HandClassification();
+                handClassification.Type = "straight";
+                handClassification.Ranks.AddRange(rankSet.Skip(startIndex).Take(CardsPerHand));
+
+                return handClassification;
+
+            }
+
+            private (int startIndex, int length) FindConsecutiveCards(List<string> rankSet)
+            {
+                var ordinalNumbers = rankSet.Select(OrdinalNumberOf).ToList();
+                var countConsecutiveCards = 0;
+                int currentIndex = 1;
+
+                while (countConsecutiveCards < RequiredNumberOfConsecutiveCards && currentIndex < ordinalNumbers.Count)
+                {
+                    if (ordinalNumbers[currentIndex - 1] + 1 == ordinalNumbers[currentIndex])
+                    {
+                        countConsecutiveCards++;
+                    }
+                    else
+                    {
+                        countConsecutiveCards = 0;
+                    }
+
+                    currentIndex++;
+                }
+
+                return (currentIndex - countConsecutiveCards - 1, countConsecutiveCards);
+            }
+
+            private int OrdinalNumberOf(string rank) => AllRanks.IndexOf(rank);
+        }
+
         private class ThreeOfAKindClassifier : HandClassifier
         {
             private const int CardsPerTriple = 3;
@@ -175,7 +223,8 @@ namespace TexasHoldemHands.Logic
             public HandClassifierChain()
             {
                 _root = new PairClassifier();
-                _ = _root.RegisterNext(new ThreeOfAKindClassifier())
+                _ = _root.RegisterNext(new StraightClassifier())
+                    .RegisterNext(new ThreeOfAKindClassifier())
                     .RegisterNext(new NothingClassifier());
             }
 
