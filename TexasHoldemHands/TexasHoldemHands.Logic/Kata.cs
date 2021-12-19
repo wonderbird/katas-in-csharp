@@ -14,7 +14,7 @@ namespace TexasHoldemHands.Logic
 
         private const int CardsPerHand = 5;
 
-        private static readonly List<string> AllRanks = new()
+        private static readonly List<string> AllRanksDescending = new()
         {
             "A",
             "K",
@@ -44,8 +44,8 @@ namespace TexasHoldemHands.Logic
 
         private static int Descending(string x, string y)
         {
-            var xIndex = AllRanks.IndexOf(x);
-            var yIndex = AllRanks.IndexOf(y);
+            var xIndex = AllRanksDescending.IndexOf(x);
+            var yIndex = AllRanksDescending.IndexOf(y);
 
             return xIndex < yIndex ? -1 : 1;
         }
@@ -79,7 +79,7 @@ namespace TexasHoldemHands.Logic
 
             private Dictionary<string, int> CountRankFrequencies(List<string> ranks)
             {
-                var rankFrequencies = AllRanks.ToDictionary(rank => rank, _ => 0);
+                var rankFrequencies = AllRanksDescending.ToDictionary(rank => rank, _ => 0);
 
                 ranks.ForEach(card => rankFrequencies[card]++);
 
@@ -186,7 +186,7 @@ namespace TexasHoldemHands.Logic
                 return (currentIndex - countConsecutiveCards - 1, countConsecutiveCards);
             }
 
-            private int OrdinalNumberOf(string rank) => AllRanks.IndexOf(rank);
+            private int OrdinalNumberOf(string rank) => AllRanksDescending.IndexOf(rank);
         }
 
         private class ThreeOfAKindClassifier : HandClassifier
