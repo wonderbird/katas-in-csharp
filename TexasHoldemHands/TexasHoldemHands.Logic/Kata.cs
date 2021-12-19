@@ -11,8 +11,11 @@ namespace TexasHoldemHands.Logic
         private const string ThreeOfAKind = "three-of-a-kind";
         private const string Straight = "straight";
         private const string Flush = "flush";
+        private const string FullHouse = "full house";
 
         private const int CardsPerHand = 5;
+        private const int CardsPerPair = 2;
+        private const int CardsPerTriple = 3;
 
         private static readonly List<string> AllRanksDescending = new()
         {
@@ -107,6 +110,28 @@ namespace TexasHoldemHands.Logic
             }
         }
 
+        public class FullHouseClassifier : HandClassifier
+        {
+            public override HandClassification ClassifyHand(HandCards handCards)
+            {
+                var pairRank = handCards.RankFrequencies.FirstOrDefault(bin => bin.Value == CardsPerPair).Key;
+                var tripleRank = handCards.RankFrequencies.FirstOrDefault(bin => bin.Value == CardsPerTriple).Key;
+                var isFullHouse = !string.IsNullOrEmpty(pairRank) && !string.IsNullOrEmpty(tripleRank);
+
+                if (!isFullHouse)
+                {
+                    return Next.ClassifyHand(handCards);
+                }
+
+                var handClassification = new HandClassification();
+                handClassification.Type = FullHouse;
+                handClassification.Ranks.Add(tripleRank);
+                handClassification.Ranks.Add(pairRank);
+
+                return handClassification;
+            }
+        }
+
         public class FlushClassifier : HandClassifier
         {
             private readonly char[] _allSuits = { '♠', '♦', '♣', '♥' };
@@ -191,8 +216,6 @@ namespace TexasHoldemHands.Logic
 
         private class ThreeOfAKindClassifier : HandClassifier
         {
-            private const int CardsPerTriple = 3;
-
             public override HandClassification ClassifyHand(HandCards handCards)
             {
                 var tripleRank = handCards.RankFrequencies.FirstOrDefault(IsTriple).Key;
@@ -216,8 +239,6 @@ namespace TexasHoldemHands.Logic
 
         private class PairClassifier : HandClassifier
         {
-            private const int CardsPerPair = 2;
-
             public override HandClassification ClassifyHand(HandCards handCards)
             {
                 var numberOfPairs = handCards.RankFrequencies.Count(bin => bin.Value == CardsPerPair);
@@ -260,8 +281,9 @@ namespace TexasHoldemHands.Logic
 
             public HandClassifierChain()
             {
-                _root = new FlushClassifier();
+                _root = new FullHouseClassifier();
                 _ = _root
+                    .RegisterNext(new FlushClassifier())
                     .RegisterNext(new StraightClassifier())
                     .RegisterNext(new ThreeOfAKindClassifier())
                     .RegisterNext(new PairClassifier())
