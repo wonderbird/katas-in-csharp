@@ -36,6 +36,8 @@ namespace TexasHoldemHands.Logic
             "2"
         };
 
+        private static readonly char[] AllSuits = { '♠', '♦', '♣', '♥' };
+
         public static (string type, string[] ranks) Hand(
             string[] holeCards,
             string[] communityCards
@@ -65,21 +67,30 @@ namespace TexasHoldemHands.Logic
             {
                 AllCards = new List<string>(holeCards);
                 AllCards.AddRange(communityCards);
+                
+                RanksDescending = AllCards.Select(Rank).ToList();
+                RanksDescending.Sort(Descending);
 
-                var ranks = AllCards.Select(Rank).ToList();
-
-                RankFrequencies = CountRankFrequencies(ranks);
+                RankFrequencies = CountRankFrequencies(RanksDescending);
                 IndividualRanks = RankFrequencies.Where(bin => bin.Value == 1)
                     .Select(bin => bin.Key)
                     .ToList();
-            }
 
+                SuitFrequencies = CountSuitFrequencies(Suits);
+            }
+            
             public Dictionary<string, int> RankFrequencies { get; }
+
+            public Dictionary<char,int> SuitFrequencies { get; set; }
 
             // TODO: Do we really need these IndividualRanks - if we have the special cases listed above, IndividualRanks may be useless.
             public List<string> IndividualRanks { get; }
 
             public List<string> AllCards { get; }
+
+            // TODO: Initialize Ranks and Suits in the constructor
+
+            public List<string> RanksDescending { get; }
 
             public List<char> Suits => AllCards.Select(Suit).ToList();
 
@@ -90,6 +101,14 @@ namespace TexasHoldemHands.Logic
                 ranks.ForEach(card => rankFrequencies[card]++);
 
                 return rankFrequencies;
+            }
+
+            private Dictionary<char, int> CountSuitFrequencies(List<char> suits)
+            {
+                var suitFrequencies = AllSuits.ToDictionary(suit => suit, _ => 0);
+
+                suits.ForEach(suit => suitFrequencies[suit]++);
+                return suitFrequencies;
             }
         }
 
@@ -110,6 +129,31 @@ namespace TexasHoldemHands.Logic
             {
                 Next = next;
                 return Next;
+            }
+        }
+
+        public class StraightFlushClassifier : HandClassifier
+        {
+            public override HandClassification ClassifyHand(HandCards handCards)
+            {
+                var flushSuit = handCards.SuitFrequencies.FirstOrDefault(bin => bin.Value >= CardsPerHand).Key;
+                var isFlush = flushSuit != 0;
+
+                var flushRanks = handCards.AllCards.Where(card => Suit(card) == flushSuit).Select(Rank).ToList();
+                
+                if (!isFlush)
+                {
+                    return Next.ClassifyHand(handCards);
+                }
+
+                var ranks = handCards.AllCards.Where(card => Suit(card) == flushSuit).Select(Rank).ToList();
+                ranks.Sort(Descending);
+
+                var handClassification = new HandClassification();
+                handClassification.Type = Flush;
+                handClassification.Ranks.AddRange(ranks.Take(CardsPerHand));
+
+                return handClassification;
             }
         }
 
@@ -157,13 +201,9 @@ namespace TexasHoldemHands.Logic
 
         public class FlushClassifier : HandClassifier
         {
-            private readonly char[] _allSuits = { '♠', '♦', '♣', '♥' };
-
             public override HandClassification ClassifyHand(HandCards handCards)
             {
-                var suitFrequencies = CountSuitFrequencies(handCards.Suits);
-
-                var flushSuit = suitFrequencies.FirstOrDefault(bin => bin.Value >= CardsPerHand).Key;
+                var flushSuit = handCards.SuitFrequencies.FirstOrDefault(bin => bin.Value >= CardsPerHand).Key;
                 var isFlush = flushSuit != 0;
 
                 if (!isFlush)
@@ -179,14 +219,6 @@ namespace TexasHoldemHands.Logic
                 handClassification.Ranks.AddRange(ranks.Take(CardsPerHand));
 
                 return handClassification;
-            }
-
-            private Dictionary<char, int> CountSuitFrequencies(List<char> suits)
-            {
-                var suitFrequencies = _allSuits.ToDictionary(suit => suit, _ => 0);
-
-                suits.ForEach(suit => suitFrequencies[suit]++);
-                return suitFrequencies;
             }
         }
 
@@ -211,7 +243,7 @@ namespace TexasHoldemHands.Logic
                 return handClassification;
             }
 
-            private (int startIndex, int length) FindConsecutiveCards(List<string> rankSet)
+            private (int startIndex, int length) FindConsecutiveCards(IEnumerable<string> rankSet)
             {
                 var ordinalNumbers = rankSet.Select(OrdinalNumberOf).ToList();
                 var countConsecutiveCards = 0;
@@ -304,8 +336,9 @@ namespace TexasHoldemHands.Logic
 
             public HandClassifierChain()
             {
-                _root = new FourOfAKindClassifier();
+                _root = new StraightFlushClassifier();
                 _ = _root
+                    .RegisterNext(new FourOfAKindClassifier())
                     .RegisterNext(new FullHouseClassifier())
                     .RegisterNext(new FlushClassifier())
                     .RegisterNext(new StraightClassifier())
