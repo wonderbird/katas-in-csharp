@@ -9,6 +9,7 @@ namespace TexasHoldemHands.Logic
         private const string Pair = "pair";
         private const string TwoPair = "two pair";
         private const string ThreeOfAKind = "three-of-a-kind";
+        private const string Straight = "straight";
         private const string Flush = "flush";
 
         private const int CardsPerHand = 5;
@@ -156,7 +157,7 @@ namespace TexasHoldemHands.Logic
                 }
 
                 var handClassification = new HandClassification();
-                handClassification.Type = "straight";
+                handClassification.Type = Straight;
                 handClassification.Ranks.AddRange(rankSet.Skip(startIndex).Take(CardsPerHand));
 
                 return handClassification;
@@ -194,7 +195,8 @@ namespace TexasHoldemHands.Logic
 
             public override HandClassification ClassifyHand(HandCards handCards)
             {
-                var isThreeOfAKind = handCards.RankFrequencies.Any(IsTriple);
+                var tripleRank = handCards.RankFrequencies.FirstOrDefault(IsTriple).Key;
+                var isThreeOfAKind = !string.IsNullOrEmpty(tripleRank);
 
                 if (!isThreeOfAKind)
                 {
@@ -203,7 +205,7 @@ namespace TexasHoldemHands.Logic
 
                 var handClassification = new HandClassification();
                 handClassification.Type = ThreeOfAKind;
-                handClassification.Ranks.Add(handCards.RankFrequencies.First(IsTriple).Key);
+                handClassification.Ranks.Add(tripleRank);
                 handClassification.Ranks.AddRange(handCards.IndividualRanks.Take(CardsPerHand - CardsPerTriple));
 
                 return handClassification;
