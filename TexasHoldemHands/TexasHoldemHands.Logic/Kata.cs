@@ -3,6 +3,7 @@ using System.Linq;
 
 namespace TexasHoldemHands.Logic
 {
+    // TODO: Check special cases: Full House with two triples, three pairs, straight + pair, straight + 2 pairs, straight + triple, flush + pair, ...
     public static class Kata
     {
         private const string Nothing = "nothing";
@@ -12,6 +13,7 @@ namespace TexasHoldemHands.Logic
         private const string Straight = "straight";
         private const string Flush = "flush";
         private const string FullHouse = "full house";
+        private const string FourOfAKind = "four-of-a-kind";
 
         private const int CardsPerHand = 5;
         private const int CardsPerPair = 2;
@@ -55,7 +57,7 @@ namespace TexasHoldemHands.Logic
 
         private static string Rank(string card) => card[..^1];
 
-        private static char Suit(string arg) => arg[^1];
+        private static char Suit(string card) => card[^1];
 
         public class HandCards
         {
@@ -74,6 +76,7 @@ namespace TexasHoldemHands.Logic
 
             public Dictionary<string, int> RankFrequencies { get; }
 
+            // TODO: Do we really need these IndividualRanks - if we have the special cases listed above, IndividualRanks may be useless.
             public List<string> IndividualRanks { get; }
 
             public List<string> AllCards { get; }
@@ -107,6 +110,26 @@ namespace TexasHoldemHands.Logic
             {
                 Next = next;
                 return Next;
+            }
+        }
+
+        public class FourOfAKindClassifier : HandClassifier
+        {
+            public override HandClassification ClassifyHand(HandCards handCards)
+            {
+                var rank = handCards.RankFrequencies.FirstOrDefault(bin => bin.Value == 4).Key;
+
+                var isFourOfAKind = !string.IsNullOrEmpty(rank);
+                if (!isFourOfAKind)
+                {
+                    return Next.ClassifyHand(handCards);
+                }
+
+                var handClassification = new HandClassification();
+                handClassification.Type = FourOfAKind;
+                handClassification.Ranks.Add(rank);
+                handClassification.Ranks.Add(handCards.RankFrequencies.First(bin => bin.Value is > 0 and < 4).Key);
+                return handClassification;
             }
         }
 
@@ -281,8 +304,9 @@ namespace TexasHoldemHands.Logic
 
             public HandClassifierChain()
             {
-                _root = new FullHouseClassifier();
+                _root = new FourOfAKindClassifier();
                 _ = _root
+                    .RegisterNext(new FullHouseClassifier())
                     .RegisterNext(new FlushClassifier())
                     .RegisterNext(new StraightClassifier())
                     .RegisterNext(new ThreeOfAKindClassifier())
