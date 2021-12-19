@@ -228,8 +228,7 @@ namespace TexasHoldemHands.Logic
                 }
 
                 var handClassification = new HandClassification();
-                var numberToPairName = new Dictionary<int, string> { { 1, Pair }, { 2, TwoPair } };
-                handClassification.Type = numberToPairName[numberOfPairs];
+                handClassification.Type = NumberOfPairsToHandType(numberOfPairs);
 
                 var pairRanks = handCards.RankFrequencies.Where(bin => bin.Value == CardsPerPair)
                     .Select(bin => bin.Key)
@@ -240,6 +239,12 @@ namespace TexasHoldemHands.Logic
                     handCards.IndividualRanks.Take(CardsPerHand - numberOfPairs * CardsPerPair));
 
                 return handClassification;
+            }
+
+            private static string NumberOfPairsToHandType(int numberOfPairs)
+            {
+                var numberToPairName = new Dictionary<int, string> { { 1, Pair }, { 2, TwoPair } };
+                return numberToPairName[numberOfPairs];
             }
         }
 
