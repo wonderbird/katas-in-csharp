@@ -260,11 +260,11 @@ namespace TexasHoldemHands.Logic
 
             public HandClassifierChain()
             {
-                _root = new PairClassifier();
+                _root = new FlushClassifier();
                 _ = _root
-                    .RegisterNext(new FlushClassifier())
                     .RegisterNext(new StraightClassifier())
                     .RegisterNext(new ThreeOfAKindClassifier())
+                    .RegisterNext(new PairClassifier())
                     .RegisterNext(new NothingClassifier());
             }
 
