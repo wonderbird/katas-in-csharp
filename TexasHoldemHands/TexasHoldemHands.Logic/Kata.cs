@@ -98,6 +98,8 @@ namespace TexasHoldemHands.Logic
                 AllCards = new List<string>(holeCards);
                 AllCards.AddRange(communityCards);
 
+                Suits = AllCards.Select(Suit).ToList();
+
                 RanksDescending = AllCards.Select(Rank).ToList();
                 RanksDescending.Sort(Descending);
 
@@ -111,18 +113,15 @@ namespace TexasHoldemHands.Logic
 
             public Dictionary<string, int> RankFrequencies { get; }
 
-            public Dictionary<char, int> SuitFrequencies { get; set; }
+            public Dictionary<char, int> SuitFrequencies { get; }
 
-            // TODO: Do we really need these IndividualRanks - if we have the special cases listed above, IndividualRanks may be useless.
             public List<string> IndividualRanks { get; }
 
             public List<string> AllCards { get; }
 
-            // TODO: Initialize Ranks and Suits in the constructor
+            private List<string> RanksDescending { get; }
 
-            public List<string> RanksDescending { get; }
-
-            public List<char> Suits => AllCards.Select(Suit).ToList();
+            private List<char> Suits { get; }
 
             private Dictionary<string, int> CountRankFrequencies(List<string> ranks)
             {
@@ -162,7 +161,7 @@ namespace TexasHoldemHands.Logic
             }
         }
 
-        public class StraightFlushClassifier : HandClassifier
+        private class StraightFlushClassifier : HandClassifier
         {
             public override HandClassification ClassifyHand(HandCards handCards)
             {
@@ -187,7 +186,7 @@ namespace TexasHoldemHands.Logic
             }
         }
 
-        public class FourOfAKindClassifier : HandClassifier
+        private class FourOfAKindClassifier : HandClassifier
         {
             public override HandClassification ClassifyHand(HandCards handCards)
             {
@@ -207,7 +206,7 @@ namespace TexasHoldemHands.Logic
             }
         }
 
-        public class FullHouseClassifier : HandClassifier
+        private class FullHouseClassifier : HandClassifier
         {
             public override HandClassification ClassifyHand(HandCards handCards)
             {
