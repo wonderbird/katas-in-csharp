@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using Xunit;
@@ -37,7 +38,7 @@ namespace TexasHoldemHands.Logic.Tests
         {
             _ = buffer.Clear();
             _ = buffer.Append(template);
-            _ = buffer.AppendLine($"Error: {message}");
+            _ = buffer.AppendLine(CultureInfo.CurrentCulture, $"Error: {message}");
             return buffer.ToString();
         }
 
@@ -49,14 +50,16 @@ namespace TexasHoldemHands.Logic.Tests
         )
         {
             _ = template.Clear();
-            _ = template.AppendLine($"\tHole cards: {ShowSeq(holeCards)}");
-            _ = template.AppendLine($"\tCommunity cards: {ShowSeq(communityCards)}");
+            _ = template.AppendLine(CultureInfo.CurrentCulture, $"\tHole cards: {ShowSeq(holeCards)}");
+            _ = template.AppendLine(CultureInfo.CurrentCulture, $"\tCommunity cards: {ShowSeq(communityCards)}");
             _ = template.AppendLine(
+                CultureInfo.CurrentCulture, 
                 $"Expected: (type: {Show(expected.type)}, ranks: {ShowSeq(expected.ranks)})"
             );
             Assert.NotNull(actual.type);
             Assert.NotNull(actual.ranks);
             _ = template.AppendLine(
+                CultureInfo.CurrentCulture, 
                 $"Actual: (type: {Show(actual.type)}, ranks: {ShowSeq(actual.ranks)})"
             );
             Assert.True(
