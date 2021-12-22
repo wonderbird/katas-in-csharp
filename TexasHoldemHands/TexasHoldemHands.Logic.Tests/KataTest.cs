@@ -118,6 +118,8 @@ namespace TexasHoldemHands.Logic.Tests
         [Theory]
         [InlineData("Codewars test case", new[] { "A♠", "A♦" }, new[] { "K♣", "K♥", "A♥", "Q♥", "3♦" },
             "full house", new[] { "A", "K" })]
+        [InlineData("Two triples", new[] { "Q♠", "Q♦" }, new[] { "K♣", "K♥", "A♥", "Q♥", "K♦" },
+            "full house", new[] { "K", "Q" })]
         public void FullHouse(
             string description,
             string[] holeCards,
