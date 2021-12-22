@@ -92,9 +92,7 @@ namespace TexasHoldemHands.Logic.Tests
 
         #region Sample Tests
 
-        [Fact(DisplayName = "Fixed Tests", Skip = "Not implemented yet.")]
-        [SuppressMessage("Usage", "xUnit1004:Test methods should not be skipped",
-            Justification = "Tested functionality has not been implemented")]
+        [Fact(DisplayName = "Fixed Tests")]
         public void FixedTests()
         {
             SampleTest(
