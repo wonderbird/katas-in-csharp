@@ -38,7 +38,7 @@ namespace TexasHoldemHands.Logic.Tests
             var classifier = new FlushClassifier();
             var classification = classifier.ClassifyHand(handCards);
 
-            Assert.Equal(new[] {"A", "9", "7", "5", "4"}, classification.Ranks);
+            Assert.Equal(new[] { "A", "9", "7", "5", "4" }, classification.Ranks);
         }
     }
 

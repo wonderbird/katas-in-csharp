@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 
 namespace TexasHoldemHands.Logic
@@ -63,13 +61,43 @@ namespace TexasHoldemHands.Logic
 
         private static char Suit(string card) => card[^1];
 
+        private static int OrdinalNumberOf(string rank) => AllRanksDescending.IndexOf(rank);
+
+        private static class StraightHelper
+        {
+            public const int RequiredNumberOfConsecutiveCards = 4;
+
+            public static (int startIndex, int length) FindConsecutiveCards(IEnumerable<string> rankSet)
+            {
+                var ordinalNumbers = rankSet.Select(OrdinalNumberOf).ToList();
+                var countConsecutiveCards = 0;
+                var currentIndex = 1;
+
+                while (countConsecutiveCards < RequiredNumberOfConsecutiveCards && currentIndex < ordinalNumbers.Count)
+                {
+                    if (ordinalNumbers[currentIndex - 1] + 1 == ordinalNumbers[currentIndex])
+                    {
+                        countConsecutiveCards++;
+                    }
+                    else
+                    {
+                        countConsecutiveCards = 0;
+                    }
+
+                    currentIndex++;
+                }
+
+                return (currentIndex - countConsecutiveCards - 1, countConsecutiveCards);
+            }
+        }
+
         public class HandCards
         {
             public HandCards(string[] holeCards, string[] communityCards)
             {
                 AllCards = new List<string>(holeCards);
                 AllCards.AddRange(communityCards);
-                
+
                 RanksDescending = AllCards.Select(Rank).ToList();
                 RanksDescending.Sort(Descending);
 
@@ -80,10 +108,10 @@ namespace TexasHoldemHands.Logic
 
                 SuitFrequencies = CountSuitFrequencies(Suits);
             }
-            
+
             public Dictionary<string, int> RankFrequencies { get; }
 
-            public Dictionary<char,int> SuitFrequencies { get; set; }
+            public Dictionary<char, int> SuitFrequencies { get; set; }
 
             // TODO: Do we really need these IndividualRanks - if we have the special cases listed above, IndividualRanks may be useless.
             public List<string> IndividualRanks { get; }
@@ -136,17 +164,15 @@ namespace TexasHoldemHands.Logic
 
         public class StraightFlushClassifier : HandClassifier
         {
-            // TODO: Remove duplicated RequiredNumberOfConsecutiveCards
-            private const int RequiredNumberOfConsecutiveCards = 4;
-
             public override HandClassification ClassifyHand(HandCards handCards)
             {
                 var flushSuit = handCards.SuitFrequencies.FirstOrDefault(bin => bin.Value >= CardsPerHand).Key;
                 var isFlush = flushSuit != 0;
 
-                var flushRanks = handCards.AllCards.Where(card => Suit(card) == flushSuit).Select(Rank).ToImmutableSortedSet().Reverse();
-                var (startIndex, length) = FindConsecutiveCards(flushRanks);
-                var isStraight = length >= RequiredNumberOfConsecutiveCards; 
+                var flushRanks = handCards.AllCards.Where(card => Suit(card) == flushSuit).Select(Rank)
+                    .OrderBy(OrdinalNumberOf).ToHashSet();
+                var (startIndex, length) = StraightHelper.FindConsecutiveCards(flushRanks);
+                var isStraight = length >= StraightHelper.RequiredNumberOfConsecutiveCards;
 
                 if (!isFlush || !isStraight)
                 {
@@ -159,38 +185,6 @@ namespace TexasHoldemHands.Logic
 
                 return handClassification;
             }
-
-            // TODO: Remove duplicated FindConsecutiveCards
-            private (int startIndex, int length) FindConsecutiveCards(IEnumerable<string> rankSet)
-            {
-                var ordinalNumbers = rankSet.Select(OrdinalNumberOf).ToList();
-                var countConsecutiveCards = 0;
-                var currentIndex = 1;
-
-                while (countConsecutiveCards < RequiredNumberOfConsecutiveCards && currentIndex < ordinalNumbers.Count)
-                {
-                    if (ordinalNumbers[currentIndex - 1] + 1 == ordinalNumbers[currentIndex])
-                    {
-                        countConsecutiveCards++;
-                    }
-                    else
-                    {
-                        countConsecutiveCards = 0;
-                    }
-
-                    currentIndex++;
-                }
-
-                // TODO: Remove commented code
-                //var skipCards = countConsecutiveCards - CardsPerHand;
-                //var takeCards = Math.Min(CardsPerHand, countConsecutiveCards);
-
-                return (currentIndex - countConsecutiveCards - 1, countConsecutiveCards);
-            }
-
-            // TODO: Remove duplicated OrdinalNumberOf
-            private int OrdinalNumberOf(string rank) => AllRanksDescending.IndexOf(rank);
-
         }
 
         public class FourOfAKindClassifier : HandClassifier
@@ -260,14 +254,12 @@ namespace TexasHoldemHands.Logic
 
         private class StraightClassifier : HandClassifier
         {
-            private const int RequiredNumberOfConsecutiveCards = 4;
-
             public override HandClassification ClassifyHand(HandCards handCards)
             {
                 var rankSet = handCards.RankFrequencies.Where(bin => bin.Value > 0).Select(bin => bin.Key).ToList();
-                var (startIndex, length) = FindConsecutiveCards(rankSet);
+                var (startIndex, length) = StraightHelper.FindConsecutiveCards(rankSet);
 
-                if (length < RequiredNumberOfConsecutiveCards)
+                if (length < StraightHelper.RequiredNumberOfConsecutiveCards)
                 {
                     return Next.ClassifyHand(handCards);
                 }
@@ -278,31 +270,6 @@ namespace TexasHoldemHands.Logic
 
                 return handClassification;
             }
-
-            private (int startIndex, int length) FindConsecutiveCards(IEnumerable<string> rankSet)
-            {
-                var ordinalNumbers = rankSet.Select(OrdinalNumberOf).ToList();
-                var countConsecutiveCards = 0;
-                var currentIndex = 1;
-
-                while (countConsecutiveCards < RequiredNumberOfConsecutiveCards && currentIndex < ordinalNumbers.Count)
-                {
-                    if (ordinalNumbers[currentIndex - 1] + 1 == ordinalNumbers[currentIndex])
-                    {
-                        countConsecutiveCards++;
-                    }
-                    else
-                    {
-                        countConsecutiveCards = 0;
-                    }
-
-                    currentIndex++;
-                }
-
-                return (currentIndex - countConsecutiveCards - 1, countConsecutiveCards);
-            }
-
-            private int OrdinalNumberOf(string rank) => AllRanksDescending.IndexOf(rank);
         }
 
         private class ThreeOfAKindClassifier : HandClassifier
