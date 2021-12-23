@@ -105,7 +105,14 @@ namespace TexasHoldemHands.Logic
                 RanksDescending.Sort(Descending);
 
                 RankFrequencies = CountRankFrequencies(RanksDescending);
-                IndividualRanks = RankFrequencies.Where(bin => bin.Value == 1)
+
+                PairRanks = RankFrequencies
+                    .Where(bin => bin.Value == CardsPerPair)
+                    .Select(bin => bin.Key)
+                    .ToList();
+
+                IndividualRanks = RankFrequencies
+                    .Where(bin => bin.Value == 1)
                     .Select(bin => bin.Key)
                     .ToList();
 
@@ -116,13 +123,15 @@ namespace TexasHoldemHands.Logic
 
             public Dictionary<char, int> SuitFrequencies { get; }
 
-            public List<string> IndividualRanks { get; }
-
             public List<string> AllCards { get; }
 
             private List<string> RanksDescending { get; }
 
             private List<char> Suits { get; }
+
+            public List<string> IndividualRanks { get; }
+            
+            public List<string> PairRanks { get; }
 
             private Dictionary<string, int> CountRankFrequencies(List<string> ranks)
             {
@@ -318,53 +327,73 @@ namespace TexasHoldemHands.Logic
 
         private class PairClassifier : HandClassifier
         {
+            // TODO: Complete refactoring of PairClassifier
             public override HandClassification ClassifyHand(HandCards handCards)
             {
-                var numberOfPairs = handCards.RankFrequencies.Count(bin => bin.Value == CardsPerPair);
-
-                if (numberOfPairs < 1)
+                var classification = ClassifySinglePair(handCards);
+                if (classification == null)
                 {
-                    return Next.ClassifyHand(handCards);
+                    classification = ClassifyTwoPairs(handCards);
+                }
+                if (classification == null)
+                {
+                    classification = ClassifyThreePairs(handCards);
                 }
 
-                var handClassification = new HandClassification();
-                handClassification.Type = NumberOfPairsToHandType(numberOfPairs);
-
-                var pairRanks = handCards.RankFrequencies.Where(bin => bin.Value == CardsPerPair)
-                    .Select(bin => bin.Key)
-                    .ToList();
-
-                var pairsToTake = numberOfPairs;
-                if (numberOfPairs == 3)
+                if (classification != null)
                 {
-                    pairsToTake = 2;
+                    return classification;
                 }
 
-                var individualCards = handCards.RankFrequencies.Where(bin => bin.Value == 1).Select(bin => bin.Key).ToList();
-                if (numberOfPairs > pairsToTake)
-                {
-                    individualCards.Add(pairRanks.Skip(pairsToTake).First());
-                }
-
-                handClassification.Ranks.AddRange(pairRanks.Take(pairsToTake));
-                handClassification.Ranks.AddRange(individualCards.Take(CardsPerHand - pairsToTake * CardsPerPair));
-
-                return handClassification;
+                return Next.ClassifyHand(handCards);
             }
 
             private HandClassification ClassifyThreePairs(HandCards handCards)
             {
-                return null;
+                if (handCards.PairRanks.Count != 3)
+                {
+                    return null;
+                }
+
+                var remainingCards = new List<string>(handCards.IndividualRanks);
+                remainingCards.AddRange(handCards.PairRanks.Skip(2));
+
+                var handClassification = new HandClassification();
+                handClassification.Type = TwoPair;
+                handClassification.Ranks.AddRange(handCards.PairRanks.Take(2));
+                handClassification.Ranks.AddRange(remainingCards.Take(CardsPerHand - 2 * CardsPerPair));
+
+                return handClassification;
             }
 
             private HandClassification ClassifyTwoPairs(HandCards handCards)
             {
-                return null;
+                if (handCards.PairRanks.Count != 2)
+                {
+                    return null;
+                }
+
+                var handClassification = new HandClassification();
+                handClassification.Type = TwoPair;
+                handClassification.Ranks.AddRange(handCards.PairRanks.Take(2));
+                handClassification.Ranks.AddRange(handCards.IndividualRanks.Take(CardsPerHand - 2 * CardsPerPair));
+
+                return handClassification;
             }
 
             private HandClassification ClassifySinglePair(HandCards handCards)
             {
-                return null;
+                if (handCards.PairRanks.Count != 1)
+                {
+                    return null;
+                }
+
+                var handClassification = new HandClassification();
+                handClassification.Type = Pair;
+                handClassification.Ranks.Add(handCards.PairRanks.First());
+                handClassification.Ranks.AddRange(handCards.IndividualRanks.Take(CardsPerHand - CardsPerPair));
+
+                return handClassification;
             }
 
             private static string NumberOfPairsToHandType(int numberOfPairs)
