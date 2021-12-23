@@ -50,6 +50,8 @@ namespace TexasHoldemHands.Logic.Tests
         [Theory]
         [InlineData("Codewars test case", new[] { "K♠", "J♦" }, new[] { "J♣", "K♥", "9♥", "2♥", "3♦" }, "two pair",
             new[] { "K", "J", "9" })]
+        [InlineData("Three pairs", new[] { "K♠", "9♦" }, new[] { "J♣", "K♥", "9♥", "J♥", "10♦" }, "two pair",
+            new[] { "K", "J", "10" })]
         public void TwoPair(
             string description,
             string[] holeCards,

@@ -322,7 +322,7 @@ namespace TexasHoldemHands.Logic
             {
                 var numberOfPairs = handCards.RankFrequencies.Count(bin => bin.Value == CardsPerPair);
 
-                if (numberOfPairs is < 1 or > 2)
+                if (numberOfPairs < 1)
                 {
                     return Next.ClassifyHand(handCards);
                 }
@@ -333,17 +333,43 @@ namespace TexasHoldemHands.Logic
                 var pairRanks = handCards.RankFrequencies.Where(bin => bin.Value == CardsPerPair)
                     .Select(bin => bin.Key)
                     .ToList();
-                handClassification.Ranks.AddRange(pairRanks);
 
-                handClassification.Ranks.AddRange(
-                    handCards.IndividualRanks.Take(CardsPerHand - numberOfPairs * CardsPerPair));
+                var pairsToTake = numberOfPairs;
+                if (numberOfPairs == 3)
+                {
+                    pairsToTake = 2;
+                }
+
+                var individualCards = handCards.RankFrequencies.Where(bin => bin.Value == 1).Select(bin => bin.Key).ToList();
+                if (numberOfPairs > pairsToTake)
+                {
+                    individualCards.Add(pairRanks.Skip(pairsToTake).First());
+                }
+
+                handClassification.Ranks.AddRange(pairRanks.Take(pairsToTake));
+                handClassification.Ranks.AddRange(individualCards.Take(CardsPerHand - pairsToTake * CardsPerPair));
 
                 return handClassification;
             }
 
+            private HandClassification ClassifyThreePairs(HandCards handCards)
+            {
+                return null;
+            }
+
+            private HandClassification ClassifyTwoPairs(HandCards handCards)
+            {
+                return null;
+            }
+
+            private HandClassification ClassifySinglePair(HandCards handCards)
+            {
+                return null;
+            }
+
             private static string NumberOfPairsToHandType(int numberOfPairs)
             {
-                var numberToPairName = new Dictionary<int, string> { { 1, Pair }, { 2, TwoPair } };
+                var numberToPairName = new Dictionary<int, string> { { 1, Pair }, { 2, TwoPair }, { 3, TwoPair } };
                 return numberToPairName[numberOfPairs];
             }
         }
