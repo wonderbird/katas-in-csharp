@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace TexasHoldemHands.Logic
 {
-    // TODO: Check special cases: Full House with two triples, three pairs, straight + pair, straight + 2 pairs, straight + triple, flush + pair, ...
+    // TODO: Check special cases: three pairs, straight + pair, straight + 2 pairs, straight + triple, flush + pair, ...
     public static class Kata
     {
         private const string Nothing = "nothing";
@@ -14,6 +14,7 @@ namespace TexasHoldemHands.Logic
         private const string Flush = "flush";
         private const string FullHouse = "full house";
         private const string FourOfAKind = "four-of-a-kind";
+        private const string StraightFlush = "straight-flush";
 
         private const int CardsPerHand = 5;
         private const int CardsPerPair = 2;
@@ -179,7 +180,7 @@ namespace TexasHoldemHands.Logic
                 }
 
                 var handClassification = new HandClassification();
-                handClassification.Type = "straight-flush";
+                handClassification.Type = StraightFlush;
                 handClassification.Ranks.AddRange(flushRanks.Skip(startIndex).Take(CardsPerHand));
 
                 return handClassification;
@@ -206,13 +207,12 @@ namespace TexasHoldemHands.Logic
             }
         }
 
-        private class FullHouseClassifier : HandClassifier
+        private class FullHouseWithTwoTriplesClassifier : HandClassifier
         {
             public override HandClassification ClassifyHand(HandCards handCards)
             {
-                var pairRank = handCards.RankFrequencies.FirstOrDefault(bin => bin.Value == CardsPerPair).Key;
-                var tripleRank = handCards.RankFrequencies.FirstOrDefault(bin => bin.Value == CardsPerTriple).Key;
-                var isFullHouse = !string.IsNullOrEmpty(pairRank) && !string.IsNullOrEmpty(tripleRank);
+                var tripleRanks = handCards.RankFrequencies.Where(bin => bin.Value == CardsPerTriple).Select(bin => bin.Key).OrderBy(OrdinalNumberOf).ToList();
+                var isFullHouse = tripleRanks.Count == 2;
 
                 if (!isFullHouse)
                 {
@@ -220,6 +220,28 @@ namespace TexasHoldemHands.Logic
                 }
 
                 var handClassification = new HandClassification();
+                handClassification.Type = FullHouse;
+                handClassification.Ranks.AddRange(tripleRanks);
+
+                return handClassification;
+            }
+        }
+
+        private class FullHouseWithTripleAndPairClassifier : HandClassifier
+        {
+            public override HandClassification ClassifyHand(HandCards handCards)
+            {
+                var pairRank = handCards.RankFrequencies.FirstOrDefault(bin => bin.Value == CardsPerPair).Key;
+                var tripleRank = handCards.RankFrequencies.FirstOrDefault(bin => bin.Value == CardsPerTriple).Key;
+                var isFullHouse = (!string.IsNullOrEmpty(pairRank) && !string.IsNullOrEmpty(tripleRank));
+
+                if (!isFullHouse)
+                {
+                    return Next.ClassifyHand(handCards);
+                }
+
+                var handClassification = new HandClassification();
+
                 handClassification.Type = FullHouse;
                 handClassification.Ranks.Add(tripleRank);
                 handClassification.Ranks.Add(pairRank);
@@ -341,7 +363,8 @@ namespace TexasHoldemHands.Logic
                 _root = new StraightFlushClassifier();
                 _ = _root
                     .RegisterNext(new FourOfAKindClassifier())
-                    .RegisterNext(new FullHouseClassifier())
+                    .RegisterNext(new FullHouseWithTwoTriplesClassifier())
+                    .RegisterNext(new FullHouseWithTripleAndPairClassifier())
                     .RegisterNext(new FlushClassifier())
                     .RegisterNext(new StraightClassifier())
                     .RegisterNext(new ThreeOfAKindClassifier())
