@@ -3,7 +3,6 @@ using System.Linq;
 
 namespace TexasHoldemHands.Logic
 {
-    // TODO: Check special cases: three pairs, straight + pair, straight + 2 pairs, straight + triple, flush + pair, ...
     public static class Kata
     {
         private const string Nothing = "nothing";

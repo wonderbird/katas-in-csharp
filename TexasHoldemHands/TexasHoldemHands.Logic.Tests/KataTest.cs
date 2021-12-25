@@ -88,6 +88,14 @@ namespace TexasHoldemHands.Logic.Tests
             "straight", new[] { "Q", "J", "10", "9", "8" })]
         [InlineData("Start with lowest", new[] { "4♠", "5♦" }, new[] { "6♣", "7♥", "9♥", "A♥", "3♦" },
             "straight", new[] { "7", "6", "5", "4", "3" })]
+        [InlineData("Start and separate pair", new[] { "4♠", "5♦" }, new[] { "6♣", "7♥", "9♥", "9♦", "3♦" },
+            "straight", new[] { "7", "6", "5", "4", "3" })]
+        [InlineData("Start and pair including a straight card", new[] { "4♠", "5♦" }, new[] { "6♣", "7♥", "7♥", "9♦", "3♦" },
+            "straight", new[] { "7", "6", "5", "4", "3" })]
+        [InlineData("Start and two pairs including two straight cards", new[] { "4♠", "5♦" }, new[] { "6♣", "7♥", "7♥", "4♦", "3♦" },
+            "straight", new[] { "7", "6", "5", "4", "3" })]
+        [InlineData("Start and three-of-a-kind including a straight card", new[] { "4♠", "5♦" }, new[] { "6♣", "7♥", "7♥", "7♦", "3♦" },
+            "straight", new[] { "7", "6", "5", "4", "3" })]
         public void Straight(
             string description,
             string[] holeCards,
@@ -104,6 +112,8 @@ namespace TexasHoldemHands.Logic.Tests
         [Theory]
         [InlineData("Codewars test case", new[] { "A♠", "K♦" }, new[] { "J♥", "5♥", "10♥", "Q♥", "3♥" },
             "flush", new[] { "Q", "J", "10", "5", "3" })]
+        [InlineData("Flush and three-of-a-kind", new[] { "A♠", "A♦" }, new[] { "J♥", "A♥", "10♥", "Q♥", "3♥" },
+            "flush", new[] { "A", "Q", "J", "10", "3" })]
         public void Flush(
             string description,
             string[] holeCards,
