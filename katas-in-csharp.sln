@@ -9,6 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{7CF31C68-F
 		.gitignore = .gitignore
 		.gitpod.Dockerfile = .gitpod.Dockerfile
 		.gitpod.yml = .gitpod.yml
+		add.sh = add.sh
 		.github\dependabot.yml = .github\dependabot.yml
 		.github\workflows\dotnet.yml = .github\workflows\dotnet.yml
 		tools\dupfinder.bat = tools\dupfinder.bat
@@ -17,12 +18,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{7CF31C68-F
 		LICENSE = LICENSE
 		README.md = README.md
 	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Template", "Template", "{6C7D6EAB-58E8-4864-8C11-FDACB9524CC8}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotnetStarter.Logic", "Template\DotnetStarter.Logic\DotnetStarter.Logic.csproj", "{D8A915CF-6F15-458B-8E70-A1A98F3441B4}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotnetStarter.Logic.Tests", "Template\DotnetStarter.Logic.Tests\DotnetStarter.Logic.Tests.csproj", "{EC1E80B1-1D7A-482C-95CF-E67BC04DDF20}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StripComments", "StripComments", "{8517ED0E-3DFC-466D-A89B-2824ED5DDFF7}"
 	ProjectSection(SolutionItems) = preProject
@@ -33,20 +28,21 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StripComments.Logic", "Stri
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StripComments.Logic.Tests", "StripComments\StripComments.Logic.Tests\StripComments.Logic.Tests.csproj", "{6FD28D99-52CF-41DA-A5CE-C8B6067D6D4D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TexasHoldemHands", "TexasHoldemHands", "{FE096FEC-7D90-45A4-8394-92B723E51342}"
+	ProjectSection(SolutionItems) = preProject
+		TexasHoldemHands\README.md = TexasHoldemHands\README.md
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TexasHoldemHands.Logic", "TexasHoldemHands\TexasHoldemHands.Logic\TexasHoldemHands.Logic.csproj", "{C3466868-11D7-465A-8877-4EDEC3D14AFC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TexasHoldemHands.Logic.Tests", "TexasHoldemHands\TexasHoldemHands.Logic.Tests\TexasHoldemHands.Logic.Tests.csproj", "{F3920B94-C1A3-4D5B-A456-89464EB067EF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{D8A915CF-6F15-458B-8E70-A1A98F3441B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D8A915CF-6F15-458B-8E70-A1A98F3441B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D8A915CF-6F15-458B-8E70-A1A98F3441B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D8A915CF-6F15-458B-8E70-A1A98F3441B4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EC1E80B1-1D7A-482C-95CF-E67BC04DDF20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EC1E80B1-1D7A-482C-95CF-E67BC04DDF20}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EC1E80B1-1D7A-482C-95CF-E67BC04DDF20}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EC1E80B1-1D7A-482C-95CF-E67BC04DDF20}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4E0135DD-377A-4753-BA47-2D444F395719}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4E0135DD-377A-4753-BA47-2D444F395719}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4E0135DD-377A-4753-BA47-2D444F395719}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -55,15 +51,23 @@ Global
 		{6FD28D99-52CF-41DA-A5CE-C8B6067D6D4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6FD28D99-52CF-41DA-A5CE-C8B6067D6D4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6FD28D99-52CF-41DA-A5CE-C8B6067D6D4D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3466868-11D7-465A-8877-4EDEC3D14AFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3466868-11D7-465A-8877-4EDEC3D14AFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3466868-11D7-465A-8877-4EDEC3D14AFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3466868-11D7-465A-8877-4EDEC3D14AFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3920B94-C1A3-4D5B-A456-89464EB067EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3920B94-C1A3-4D5B-A456-89464EB067EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3920B94-C1A3-4D5B-A456-89464EB067EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3920B94-C1A3-4D5B-A456-89464EB067EF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{D8A915CF-6F15-458B-8E70-A1A98F3441B4} = {6C7D6EAB-58E8-4864-8C11-FDACB9524CC8}
-		{EC1E80B1-1D7A-482C-95CF-E67BC04DDF20} = {6C7D6EAB-58E8-4864-8C11-FDACB9524CC8}
 		{4E0135DD-377A-4753-BA47-2D444F395719} = {8517ED0E-3DFC-466D-A89B-2824ED5DDFF7}
 		{6FD28D99-52CF-41DA-A5CE-C8B6067D6D4D} = {8517ED0E-3DFC-466D-A89B-2824ED5DDFF7}
+		{C3466868-11D7-465A-8877-4EDEC3D14AFC} = {FE096FEC-7D90-45A4-8394-92B723E51342}
+		{F3920B94-C1A3-4D5B-A456-89464EB067EF} = {FE096FEC-7D90-45A4-8394-92B723E51342}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DCB8F894-FC57-4819-81E4-59C984EA02E5}

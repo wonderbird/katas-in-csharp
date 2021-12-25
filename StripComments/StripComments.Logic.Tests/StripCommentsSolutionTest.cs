@@ -6,7 +6,7 @@ namespace StripComments.Logic.Tests
 {
     public class StripCommentsSolutionTest
     {
-        [Fact()]
+        [Fact]
         [SuppressMessage(
             "Usage",
             "xUnit1004:Test methods should not be skipped",
