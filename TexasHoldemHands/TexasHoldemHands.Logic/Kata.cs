@@ -130,7 +130,7 @@ namespace TexasHoldemHands.Logic
             private List<char> Suits { get; }
 
             public List<string> IndividualRanks { get; }
-            
+
             public List<string> PairRanks { get; }
 
             private Dictionary<string, int> CountRankFrequencies(List<string> ranks)
@@ -325,34 +325,13 @@ namespace TexasHoldemHands.Logic
             private bool IsTriple(KeyValuePair<string, int> cardAndQuantity) => cardAndQuantity.Value == CardsPerTriple;
         }
 
-        private class PairClassifier : HandClassifier
+        private class ThreePairClassifier : HandClassifier
         {
-            // TODO: Complete refactoring of PairClassifier
             public override HandClassification ClassifyHand(HandCards handCards)
-            {
-                var classification = ClassifySinglePair(handCards);
-                if (classification == null)
-                {
-                    classification = ClassifyTwoPairs(handCards);
-                }
-                if (classification == null)
-                {
-                    classification = ClassifyThreePairs(handCards);
-                }
-
-                if (classification != null)
-                {
-                    return classification;
-                }
-
-                return Next.ClassifyHand(handCards);
-            }
-
-            private HandClassification ClassifyThreePairs(HandCards handCards)
             {
                 if (handCards.PairRanks.Count != 3)
                 {
-                    return null;
+                    return Next.ClassifyHand(handCards);
                 }
 
                 var remainingCards = new List<string>(handCards.IndividualRanks);
@@ -365,12 +344,15 @@ namespace TexasHoldemHands.Logic
 
                 return handClassification;
             }
+        }
 
-            private HandClassification ClassifyTwoPairs(HandCards handCards)
+        private class TwoPairClassifier : HandClassifier
+        {
+            public override HandClassification ClassifyHand(HandCards handCards)
             {
                 if (handCards.PairRanks.Count != 2)
                 {
-                    return null;
+                    return Next.ClassifyHand(handCards);
                 }
 
                 var handClassification = new HandClassification();
@@ -380,12 +362,15 @@ namespace TexasHoldemHands.Logic
 
                 return handClassification;
             }
+        }
 
-            private HandClassification ClassifySinglePair(HandCards handCards)
+        private class OnePairClassifier : HandClassifier
+        {
+            public override HandClassification ClassifyHand(HandCards handCards)
             {
                 if (handCards.PairRanks.Count != 1)
                 {
-                    return null;
+                    return Next.ClassifyHand(handCards);
                 }
 
                 var handClassification = new HandClassification();
@@ -394,12 +379,6 @@ namespace TexasHoldemHands.Logic
                 handClassification.Ranks.AddRange(handCards.IndividualRanks.Take(CardsPerHand - CardsPerPair));
 
                 return handClassification;
-            }
-
-            private static string NumberOfPairsToHandType(int numberOfPairs)
-            {
-                var numberToPairName = new Dictionary<int, string> { { 1, Pair }, { 2, TwoPair }, { 3, TwoPair } };
-                return numberToPairName[numberOfPairs];
             }
         }
 
@@ -423,7 +402,9 @@ namespace TexasHoldemHands.Logic
                     .RegisterNext(new FlushClassifier())
                     .RegisterNext(new StraightClassifier())
                     .RegisterNext(new ThreeOfAKindClassifier())
-                    .RegisterNext(new PairClassifier())
+                    .RegisterNext(new ThreePairClassifier())
+                    .RegisterNext(new OnePairClassifier())
+                    .RegisterNext(new TwoPairClassifier())
                     .RegisterNext(new NothingClassifier());
             }
 
