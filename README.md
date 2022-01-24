@@ -40,8 +40,9 @@ This requires python.
 If you are interested in test coverage, then you'll need the following tools installed:
 
 ```shell
-dotnet tool install --global coverlet.console --configfile NuGet-OfficialOnly.config
-dotnet tool install --global dotnet-reportgenerator-globaltool --configfile NuGet-OfficialOnly.config
+# Note: Apple Silicon users append -a arm64 to each command.
+dotnet tool install --global coverlet.console
+dotnet tool install --global dotnet-reportgenerator-globaltool
 ```
 
 ## Build, Test, Run
