@@ -10,6 +10,7 @@
 # - a README.md inside the folder
 #
 # It will add the csproj files to the overall solution file katas-in-csharp.sln
+# and it will update the `.netconfig` with the additional coverage report.
 #
 # NOTE:
 # Please add the README.md file to your solution folder manually as an existing item.
@@ -65,3 +66,4 @@ popd
 dotnet sln katas-in-csharp.sln add "$DIR/$LOGIC/$LOGIC.csproj" --solution-folder "$DIR"
 dotnet sln katas-in-csharp.sln add "$DIR/$TEST/$TEST.csproj" --solution-folder "$DIR"
 
+echo "    report = $DIR/$TEST/TestResults/*.xml" >> .netconfig
