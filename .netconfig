@@ -1,7 +1,7 @@
 [ReportGenerator]
-	reporttype = Html
-	reporttype = lcov
-	targetdir = report
-	title = Katas in C#
+    reporttype = Html
+    reporttype = lcov
+    targetdir = report
+    title = Katas in C#
     report = StripComments/StripComments.Logic.Tests/TestResults/*.xml
     report = TexasHoldemHands/TexasHoldemHands.Logic.Tests/TestResults/*.xml
