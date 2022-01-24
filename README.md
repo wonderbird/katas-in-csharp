@@ -40,8 +40,9 @@ This requires python.
 If you are interested in test coverage, then you'll need the following tools installed:
 
 ```shell
-dotnet tool install --global coverlet.console --configfile NuGet-OfficialOnly.config
-dotnet tool install --global dotnet-reportgenerator-globaltool --configfile NuGet-OfficialOnly.config
+# Note: Apple Silicon users append -a arm64 to each command.
+dotnet tool install --global coverlet.console
+dotnet tool install --global dotnet-reportgenerator-globaltool
 ```
 
 ## Build, Test, Run
@@ -65,6 +66,12 @@ open report/index.html
 ```
 
 ### Before Creating a Pull Request ...
+
+... check modified shell scripts
+
+```shell
+shellcheck ./add.sh
+```
 
 ... apply code formatting rules
 
@@ -140,8 +147,8 @@ The report will be created as `dupfinder-report.html` in the current directory.
 * GitHub: [coverlet-coverage / coverlet](https://github.com/coverlet-coverage/coverlet)
 * GitHub: [danielpalme / ReportGenerator](https://github.com/danielpalme/ReportGenerator)
 * JetBrains s.r.o.: [dupFinder Command-Line Tool](https://www.jetbrains.com/help/resharper/dupFinder.html)
-* Scott
-  Hanselman: [EditorConfig code formatting from the command line with .NET Core's dotnet format global tool](https://www.hanselman.com/blog/editorconfig-code-formatting-from-the-command-line-with-net-cores-dotnet-format-global-tool)
+* Vidar Holen: [ShellCheck](https://github.com/koalaman/shellcheck) - shell script static analysis tool
+* Scott Hanselman: [EditorConfig code formatting from the command line with .NET Core's dotnet format global tool](https://www.hanselman.com/blog/editorconfig-code-formatting-from-the-command-line-with-net-cores-dotnet-format-global-tool)
 * [EditorConfig.org](https://editorconfig.org)
 * GitHub: [dotnet / roslyn - .editorconfig](https://github.com/dotnet/roslyn/blob/master/.editorconfig)
 * Check all the badges on top of this README
