@@ -2,37 +2,38 @@ namespace Snail.Logic
 {
     public class SnailSolution
     {
-        public static int[] Snail(int[][] array)
+        public static int[] Snail(int[][] array) => Enumerate(array).ToArray();
+
+        private static IEnumerable<int> Enumerate(int[][] array)
         {
             var n = array.Length;
-            var result = new List<int>();
 
-            for (var index = 0; index < n * n; index++)
+            for (var i = 0; i < n * n; i++)
             {
-                result.Add(array[Row(index, n)][Column(index, n)]);
+                yield return array[Row(i, n)][Column(i, n)];
             }
-
-            return result.ToArray();
         }
 
-        private static int Column(int index, int size)
+        private static int Column(int i, int n)
         {
-            if (index == 0)
+            return i switch
             {
-                return 0;
-            }
-
-            return index == 1 ? 1 : index == 2 ? 1 : 0;
+                0 => 0,
+                1 => 1,
+                2 => 1,
+                _ => 0
+            };
         }
 
-        private static int Row(int index, int size)
+        private static int Row(int i, int n)
         {
-            if (index == 0)
+            return i switch
             {
-                return 0;
-            }
-
-            return index == 1 ? 0 : index == 2 ? 1 : 1;
+                0 => 0,
+                1 => 0,
+                2 => 1,
+                _ => 1
+            };
         }
     }
 }
