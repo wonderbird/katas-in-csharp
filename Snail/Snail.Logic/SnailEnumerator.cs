@@ -8,6 +8,8 @@ public class SnailEnumerator
     private int _row;
     private int _stepCount;
 
+    public int Current => _array[_row][_column];
+
     public SnailEnumerator(int[][] array)
     {
         _array = array;
@@ -18,7 +20,7 @@ public class SnailEnumerator
     {
         while (_stepCount < _width * _width)
         {
-            yield return _array[_row][_column];
+            yield return Current;
 
             _stepCount++;
             _column = Column();
