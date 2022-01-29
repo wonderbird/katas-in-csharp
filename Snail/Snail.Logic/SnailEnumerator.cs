@@ -21,11 +21,15 @@ public class SnailEnumerator
         while (_stepCount < _width * _width)
         {
             yield return Current;
-
-            _stepCount++;
-            _column = Column();
-            _row = Row();
+            MoveNext();
         }
+    }
+
+    private void MoveNext()
+    {
+        _stepCount++;
+        _column = Column();
+        _row = Row();
     }
 
     private int Column()
