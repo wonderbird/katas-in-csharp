@@ -1,12 +1,21 @@
+using System.Collections;
+
 namespace Snail.Logic;
 
-public class SnailEnumerator
+public sealed class SnailEnumerator : IEnumerator<int>
 {
     private readonly int[][] _array;
     private readonly int _width;
     private int _column;
     private int _row;
     private int _stepCount = -1;
+
+    public void Reset()
+    {
+        _stepCount = -1;
+    }
+
+    object IEnumerator.Current => Current;
 
     public int Current => _array[_row][_column];
 
@@ -20,11 +29,11 @@ public class SnailEnumerator
     {
         while (MoveNext())
         {
-            yield return Current;
+            yield return (int)Current;
         }
     }
 
-    private bool MoveNext()
+    public bool MoveNext()
     {
         _stepCount++;
         _column = Column();
@@ -53,5 +62,9 @@ public class SnailEnumerator
             2 => 1,
             _ => 1
         };
+    }
+
+    public void Dispose()
+    {
     }
 }

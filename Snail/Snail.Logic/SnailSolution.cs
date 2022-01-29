@@ -1,7 +1,17 @@
+using System.Collections;
+
 namespace Snail.Logic
 {
-    public class SnailSolution
+    public class SnailSolution : IEnumerable<int>
     {
-        public static int[] Snail(int[][] array) => new SnailEnumerator(array).Enumerate().ToArray();
+        private readonly int[][] _array;
+
+        private SnailSolution(int[][] array) => _array = array;
+
+        public static int[] Snail(int[][] array) => new SnailSolution(array).ToArray();
+
+        public IEnumerator<int> GetEnumerator() => new SnailEnumerator(_array);
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }
