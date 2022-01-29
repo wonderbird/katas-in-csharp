@@ -8,11 +8,11 @@ public sealed class SnailEnumerator : IEnumerator<int>
     private readonly int _width;
     private int _column;
     private int _row;
-    private int _stepCount = -1;
+    private int _position = -1;
 
     public void Reset()
     {
-        _stepCount = -1;
+        _position = -1;
     }
 
     object IEnumerator.Current => Current;
@@ -25,26 +25,18 @@ public sealed class SnailEnumerator : IEnumerator<int>
         _width = _array.Length;
     }
 
-    public IEnumerable<int> Enumerate()
-    {
-        while (MoveNext())
-        {
-            yield return (int)Current;
-        }
-    }
-
     public bool MoveNext()
     {
-        _stepCount++;
+        _position++;
         _column = Column();
         _row = Row();
 
-        return _stepCount < _width * _width;
+        return _position < _width * _width;
     }
 
     private int Column()
     {
-        return _stepCount switch
+        return _position switch
         {
             0 => 0,
             1 => 1,
@@ -55,7 +47,7 @@ public sealed class SnailEnumerator : IEnumerator<int>
 
     private int Row()
     {
-        return _stepCount switch
+        return _position switch
         {
             0 => 0,
             1 => 0,
