@@ -7,10 +7,17 @@ namespace Snail.Logic
         private static IEnumerable<int> Enumerate(int[][] array)
         {
             var n = array.Length;
+            var column = 0;
+            var row = 0;
+            var stepCount = 0;
 
-            for (var i = 0; i < n * n; i++)
+            while (stepCount < n * n)
             {
-                yield return array[Row(i, n)][Column(i, n)];
+                yield return array[row][column];
+
+                stepCount++;
+                column = Column(stepCount, n);
+                row = Row(stepCount, n);
             }
         }
 
