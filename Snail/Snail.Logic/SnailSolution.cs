@@ -2,6 +2,6 @@ namespace Snail.Logic
 {
     public class SnailSolution
     {
-        public static int[] Snail(int[][] array) => SnailEnumerator.Enumerate(array).ToArray();
+        public static int[] Snail(int[][] array) => new SnailEnumerator(array).Enumerate().ToArray();
     }
 }

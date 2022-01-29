@@ -2,26 +2,33 @@ namespace Snail.Logic;
 
 public class SnailEnumerator
 {
-    public static IEnumerable<int> Enumerate(int[][] array)
+    private readonly int[][] _array;
+    private readonly int _width;
+    private int _column;
+    private int _row;
+    private int _stepCount;
+
+    public SnailEnumerator(int[][] array)
     {
-        var n = array.Length;
-        var column = 0;
-        var row = 0;
-        var stepCount = 0;
+        _array = array;
+        _width = _array.Length;
+    }
 
-        while (stepCount < n * n)
+    public IEnumerable<int> Enumerate()
+    {
+        while (_stepCount < _width * _width)
         {
-            yield return array[row][column];
+            yield return _array[_row][_column];
 
-            stepCount++;
-            column = Column(stepCount, n);
-            row = Row(stepCount, n);
+            _stepCount++;
+            _column = Column();
+            _row = Row();
         }
     }
 
-    private static int Column(int i, int n)
+    private int Column()
     {
-        return i switch
+        return _stepCount switch
         {
             0 => 0,
             1 => 1,
@@ -30,9 +37,9 @@ public class SnailEnumerator
         };
     }
 
-    private static int Row(int i, int n)
+    private int Row()
     {
-        return i switch
+        return _stepCount switch
         {
             0 => 0,
             1 => 0,
