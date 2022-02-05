@@ -15,7 +15,7 @@ internal class Created : IState
     {
         if (_array.Length > 0)
         {
-            return new RightMovement(_array);
+            return new RightMovement(_array, 0, 0);
         }
 
         return new EndOfSnail();

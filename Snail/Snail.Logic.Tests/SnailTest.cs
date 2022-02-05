@@ -16,10 +16,10 @@ namespace Snail.Logic.Tests
             Test(array, r);
         }
 
-        public string Int2dToString(int[][] a) => $"[{string.Join("\n", a.Select(row => $"[{string.Join(",", row)}]"))}]";
+        private string Int2dToString(int[][] a) => $"[{string.Join("\n", a.Select(row => $"[{string.Join(",", row)}]"))}]";
 
         [SuppressMessage("Usage", "xUnit1013:Public method should be marked as test")]
-        public void Test(int[][] array, int[] result)
+        private void Test(int[][] array, int[] result)
         {
             var text = $"{Int2dToString(array)}\nshould be sorted to\n[{string.Join(",", result)}]\n";
             Console.WriteLine(text);
