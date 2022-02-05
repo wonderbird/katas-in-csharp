@@ -14,7 +14,7 @@ public sealed class SnailEnumerator : IEnumerator<int>
 
     public int Current => _state.Current;
 
-    public SnailEnumerator(int[][] array) => _state = new NormalMovement(array);
+    public SnailEnumerator(int[][] array) => _state = new Created(array);
 
     public bool MoveNext()
     {
