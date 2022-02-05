@@ -5,8 +5,8 @@ internal class RightMovement : Movement
     private readonly int _rightMostColumn;
     private int _column;
     private readonly int _row;
-    private int _centerColumn;
-    private int _centerRow;
+    private readonly int _centerColumn;
+    private readonly int _centerRow;
 
     public RightMovement(int[][] array, int column, int row) : base(array)
     {
@@ -29,7 +29,7 @@ internal class RightMovement : Movement
 
         if (_column == _rightMostColumn)
         {
-            return new DownMovement(Array, _column);
+            return new DownMovement(Array, _column, _row + 1);
         }
 
         _column++;

@@ -2,10 +2,19 @@ namespace Snail.Logic.States;
 
 internal class UpMovement : Movement
 {
-    public UpMovement(int[][] array) : base(array)
-    {
-    }
+    private int _row;
 
-    public override int Current => Array[1][0];
-    public override IState MoveNext() => new RightMovement(Array, 1, 1);
+    public UpMovement(int[][] array, int row) : base(array) => _row = row;
+
+    public override int Current => Array[_row][0];
+    public override IState MoveNext()
+    {
+        if (_row == 1)
+        {
+            return new RightMovement(Array, 1, _row);
+        }
+
+        _row--;
+        return this;
+    }
 }
