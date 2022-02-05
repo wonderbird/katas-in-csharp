@@ -1,13 +1,12 @@
 namespace Snail.Logic.States;
 
-internal class DownMovement : IState
+internal class DownMovement : Movement
 {
-    private readonly int[][] _array;
+    public DownMovement(int[][] array) : base(array)
+    {
+    }
 
-    public DownMovement(int[][] array) => _array = array;
+    public override int Current => Array[1][1];
 
-    public bool IsEndOfSnail => false;
-    public int Current => _array[1][1];
-
-    public IState MoveNext() => new LeftMovement(_array);
+    public override IState MoveNext() => new LeftMovement(Array);
 }

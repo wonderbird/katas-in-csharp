@@ -1,30 +1,24 @@
 namespace Snail.Logic.States;
 
-internal class RightMovement : IState
+internal class RightMovement : Movement
 {
-    private readonly int[][] _array;
     private readonly int _rightMostColumn;
     private int _column;
 
-    public RightMovement(int[][] array)
-    {
-        _array = array;
-        _rightMostColumn = array.Length - 1;
-    }
+    public RightMovement(int[][] array) : base(array) => _rightMostColumn = array.Length - 1;
 
-    public bool IsEndOfSnail => false;
-    public int Current => _array[0][_column];
+    public override int Current => Array[0][_column];
 
-    public IState MoveNext()
+    public override IState MoveNext()
     {
-        if (_array.Length == 1)
+        if (Array.Length == 1)
         {
             return new EndOfSnail();
         }
 
         if (_column == _rightMostColumn)
         {
-            return new DownMovement(_array);
+            return new DownMovement(Array);
         }
 
         _column++;
