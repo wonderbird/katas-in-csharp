@@ -2,7 +2,7 @@ namespace Snail.Logic;
 
 internal interface IState
 {
-    bool IsEndOfSnake { get; }
+    bool IsEndOfSnail { get; }
     int Current { get; }
     IState MoveNext();
 }

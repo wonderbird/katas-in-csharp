@@ -19,7 +19,7 @@ public sealed class SnailEnumerator : IEnumerator<int>
     public bool MoveNext()
     {
         _state = _state.MoveNext();
-        return !_state.IsEndOfSnake;
+        return !_state.IsEndOfSnail;
     }
 
     public void Dispose()

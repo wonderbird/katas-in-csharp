@@ -15,7 +15,7 @@ internal class NormalMovement : IState
         _position = position;
     }
 
-    public bool IsEndOfSnake => false;
+    public bool IsEndOfSnail => false;
     public int Current => _array[_row][_column];
 
     public IState MoveNext()
@@ -29,7 +29,7 @@ internal class NormalMovement : IState
             return this;
         }
 
-        return new EndOfSnake();
+        return new EndOfSnail();
     }
 
     private int Column()
