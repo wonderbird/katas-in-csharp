@@ -2,9 +2,9 @@ namespace Snail.Logic;
 
 internal class Created : IState
 {
-    public Created(int[][] array)
-    {
-    }
+    private readonly int[][] _array;
+
+    public Created(int[][] array) => _array = array;
 
     public bool IsEndOfSnail => false;
 
@@ -13,6 +13,11 @@ internal class Created : IState
 
     public IState MoveNext()
     {
+        if (_array.Length > 0)
+        {
+            return new RightMovement(_array);
+        }
+
         return new EndOfSnail();
     }
 }
