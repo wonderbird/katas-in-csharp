@@ -1,10 +1,10 @@
-namespace Snail.Logic;
+namespace Snail.Logic.States;
 
 internal class RightMovement : IState
 {
     private readonly int[][] _array;
-    private int _column;
     private readonly int _rightMostColumn;
+    private int _column;
 
     public RightMovement(int[][] array)
     {
@@ -14,6 +14,7 @@ internal class RightMovement : IState
 
     public bool IsEndOfSnail => false;
     public int Current => _array[0][_column];
+
     public IState MoveNext()
     {
         if (_array.Length == 1)

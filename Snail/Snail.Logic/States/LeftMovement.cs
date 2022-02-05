@@ -1,4 +1,4 @@
-namespace Snail.Logic;
+namespace Snail.Logic.States;
 
 internal class LeftMovement : IState
 {
