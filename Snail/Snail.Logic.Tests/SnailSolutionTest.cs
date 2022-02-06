@@ -10,6 +10,9 @@ namespace Snail.Logic.Tests
         public void When0X0MatrixThenReturnEmptyArray() => Assert.Empty(SnailSolution.Snail(Array.Empty<int[]>()));
 
         [Fact]
+        public void WhenArrayWithEmptyArrayThenReturnEmptyArray() => Assert.Empty(SnailSolution.Snail(new []{ Array.Empty<int>() }));
+
+        [Fact]
         public void When1X1MatrixThenReturnThatElement()
         {
             var input = new[] { new[] { 42 } };

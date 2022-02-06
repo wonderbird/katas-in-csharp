@@ -67,7 +67,7 @@ namespace Snail.Logic
 
         public IState MoveNext()
         {
-            if (_array.Length > 0)
+            if (_array.Length > 0 && _array[0].Length > 0)
             {
                 return new RightMovement(_array, 0, 0);
             }
