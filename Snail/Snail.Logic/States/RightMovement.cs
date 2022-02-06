@@ -3,22 +3,15 @@ namespace Snail.Logic.States;
 internal class RightMovement : Movement
 {
     private readonly int _rightMostColumn;
-    private int _column;
-    private readonly int _row;
     private readonly int _centerColumn;
     private readonly int _centerRow;
 
-    public RightMovement(int[][] array, int column, int row) : base(array)
+    public RightMovement(int[][] array, int column, int row) : base(array, column, row)
     {
-        _column = column;
-        _row = row;
-
         _rightMostColumn = array.Length - 1 - column;
         _centerColumn = (Array.Length - 1) / 2;
         _centerRow = _centerColumn;
     }
-
-    public override int Current => Array[_row][_column];
 
     public override IState MoveNext()
     {
@@ -27,14 +20,14 @@ internal class RightMovement : Movement
             return new EndOfSnail();
         }
 
-        if (_column == _rightMostColumn)
+        if (Column == _rightMostColumn)
         {
-            return new DownMovement(Array, _column, _row + 1);
+            return new DownMovement(Array, Column, Row + 1);
         }
 
-        _column++;
+        Column++;
         return this;
     }
 
-    private bool IsAtCenter() => Array.Length % 2 == 1 && _column == _centerColumn && _row == _centerRow;
+    private bool IsAtCenter() => Array.Length % 2 == 1 && Column == _centerColumn && Row == _centerRow;
 }

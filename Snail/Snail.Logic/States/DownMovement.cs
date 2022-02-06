@@ -2,27 +2,18 @@ namespace Snail.Logic.States;
 
 internal class DownMovement : Movement
 {
-    private readonly int _column;
     private readonly int _bottomRow;
-    private int _row;
 
-    public DownMovement(int[][] array, int column, int row) : base(array)
-    {
-        _column = column;
-        _row = row;
-        _bottomRow = array.Length - 1 - (row-1);
-    }
-
-    public override int Current => Array[_row][_column];
+    public DownMovement(int[][] array, int column, int row) : base(array, column, row) => _bottomRow = array.Length - 1 - (row-1);
 
     public override IState MoveNext()
     {
-        if (_row == _bottomRow)
+        if (Row == _bottomRow)
         {
-            return new LeftMovement(Array, _column - 1, _row);
+            return new LeftMovement(Array, Column - 1, Row);
         }
 
-        _row++;
+        Row++;
         return this;
     }
 }
